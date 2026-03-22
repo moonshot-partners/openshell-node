@@ -1,0 +1,105 @@
+// --- openshell.proto ---
+export {
+  OpenShellDefinition,
+  ServiceStatus,
+  serviceStatusFromJSON,
+  serviceStatusToJSON,
+  PolicyStatus,
+  policyStatusFromJSON,
+  policyStatusToJSON,
+} from "./openshell.js";
+
+export type {
+  OpenShellClient,
+  HealthRequest,
+  HealthResponse,
+  CreateSandboxRequest,
+  SandboxResponse,
+  GetSandboxRequest,
+  ListSandboxesRequest,
+  ListSandboxesResponse,
+  DeleteSandboxRequest,
+  DeleteSandboxResponse,
+  ExecSandboxRequest,
+  ExecSandboxEvent,
+  ExecSandboxStdout,
+  ExecSandboxStderr,
+  ExecSandboxExit,
+  WatchSandboxRequest,
+  SandboxStreamEvent,
+  SandboxLogLine,
+  PlatformEvent,
+  CreateProviderRequest,
+  GetProviderRequest,
+  ListProvidersRequest,
+  ListProvidersResponse,
+  UpdateProviderRequest,
+  DeleteProviderRequest,
+  ProviderResponse,
+  GetSandboxProviderEnvironmentRequest,
+  GetSandboxProviderEnvironmentResponse,
+  UpdateConfigRequest,
+  UpdateConfigResponse,
+  GetSandboxPolicyStatusRequest,
+  GetSandboxPolicyStatusResponse,
+  ListSandboxPoliciesRequest,
+  ListSandboxPoliciesResponse,
+  GetDraftPolicyRequest,
+  ApproveDraftChunkRequest,
+  RejectDraftChunkRequest,
+  GetSandboxLogsRequest,
+  GetSandboxLogsResponse,
+  CreateSshSessionRequest,
+  CreateSshSessionResponse,
+  RevokeSshSessionRequest,
+  RevokeSshSessionResponse,
+  SshSession,
+  ReportPolicyStatusRequest,
+  SandboxPolicyRevision,
+  DenialSummary,
+  L7RequestSample,
+  SandboxStreamWarning,
+} from "./openshell.js";
+
+// --- datamodel.proto ---
+export {
+  SandboxPhase,
+  sandboxPhaseFromJSON,
+  sandboxPhaseToJSON,
+} from "./datamodel.js";
+
+export type {
+  Sandbox,
+  SandboxSpec,
+  SandboxTemplate,
+  SandboxStatus,
+  SandboxCondition,
+  Provider,
+} from "./datamodel.js";
+
+// --- sandbox.proto ---
+export {
+  SettingScope,
+  settingScopeFromJSON,
+  settingScopeToJSON,
+  PolicySource,
+  policySourceFromJSON,
+  policySourceToJSON,
+} from "./sandbox.js";
+
+export type {
+  SandboxPolicy,
+  FilesystemPolicy,
+  LandlockPolicy,
+  ProcessPolicy,
+  NetworkPolicyRule,
+  NetworkEndpoint,
+  NetworkBinary,
+  L7Rule,
+  L7Allow,
+  GetSandboxConfigRequest,
+  GetSandboxConfigResponse,
+  GetGatewayConfigResponse,
+  SettingValue,
+  EffectiveSetting,
+} from "./sandbox.js";
