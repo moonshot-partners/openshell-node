@@ -51,7 +51,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:integration": "OPENSHELL_TEST=1 vitest run src/__tests__/integration.test.ts",
+    "test:integration": "OPENSHELL_TEST=1 vitest run --config vitest.integration.config.ts",
     "lint": "eslint src/ --ignore-pattern 'src/generated/'",
     "lint:fix": "eslint src/ --fix --ignore-pattern 'src/generated/'",
     "format": "prettier --write 'src/**/*.ts' '!src/generated/**' '*.json' '*.md'",
