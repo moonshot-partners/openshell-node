@@ -46,7 +46,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Install protoc
-        run: sudo apt-get install -y protobuf-compiler
+        uses: arduino/setup-protoc@v3
+        with:
+          version: "33.2"
 
       - name: Regenerate and check for drift
         run: |
