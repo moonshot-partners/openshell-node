@@ -1,5 +1,7 @@
 import type { ExecSandboxEvent } from "./generated/openshell.js";
 
+const decoder = new TextDecoder();
+
 export interface ExecLine {
   type: "stdout" | "stderr";
   line: string;
@@ -27,14 +29,14 @@ export async function* streamExecLines(
 
   for await (const event of grpcStream) {
     if (event.stdout) {
-      stdoutBuf += new TextDecoder().decode(event.stdout.data);
+      stdoutBuf += decoder.decode(event.stdout.data);
       const lines = stdoutBuf.split("\n");
       stdoutBuf = lines.pop() ?? "";
       for (const line of lines) {
         if (line) yield { type: "stdout", line };
       }
     } else if (event.stderr) {
-      stderrBuf += new TextDecoder().decode(event.stderr.data);
+      stderrBuf += decoder.decode(event.stderr.data);
       const lines = stderrBuf.split("\n");
       stderrBuf = lines.pop() ?? "";
       for (const line of lines) {

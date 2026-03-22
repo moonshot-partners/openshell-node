@@ -5,11 +5,15 @@ import { createChannel, createClient, type Channel } from "nice-grpc";
 import { credentials as grpcCredentials } from "@grpc/grpc-js";
 import {
   OpenShellDefinition,
+  serviceStatusToJSON,
   type OpenShellClient as GeneratedClient,
+  type ExecSandboxEvent,
+  type CreateSandboxRequest,
 } from "./generated/openshell.js";
-import type { ExecSandboxEvent, CreateSandboxRequest } from "./generated/openshell.js";
 import { SandboxPhase, type Sandbox as SandboxModel } from "./generated/datamodel.js";
-import { serviceStatusToJSON } from "./generated/openshell.js";
+
+const decoder = new TextDecoder();
+const EMPTY_BYTES = new Uint8Array();
 
 export interface OpenShellClientOpts {
   /** gRPC gateway endpoint (e.g., "localhost:8080") */
@@ -82,7 +86,7 @@ export class OpenShellClient {
       workdir: request.workdir ?? "",
       environment: request.environment ?? {},
       timeoutSeconds: request.timeoutSeconds ?? 0,
-      stdin: request.stdin ?? new Uint8Array(),
+      stdin: request.stdin ?? EMPTY_BYTES,
     });
   }
 
@@ -114,8 +118,8 @@ export class OpenShellClient {
     command: string[],
     opts?: { workdir?: string; environment?: Record<string, string>; timeoutSeconds?: number },
   ): Promise<ExecCollectResult> {
-    let stdout = "";
-    let stderr = "";
+    const stdoutParts: string[] = [];
+    const stderrParts: string[] = [];
     let exitCode = 0;
 
     for await (const event of this.execSandbox({
@@ -124,15 +128,15 @@ export class OpenShellClient {
       ...opts,
     })) {
       if (event.stdout) {
-        stdout += new TextDecoder().decode(event.stdout.data);
+        stdoutParts.push(decoder.decode(event.stdout.data));
       } else if (event.stderr) {
-        stderr += new TextDecoder().decode(event.stderr.data);
+        stderrParts.push(decoder.decode(event.stderr.data));
       } else if (event.exit) {
         exitCode = event.exit.exitCode;
       }
     }
 
-    return { stdout, stderr, exitCode };
+    return { stdout: stdoutParts.join(""), stderr: stderrParts.join(""), exitCode };
   }
 
   close(): void {
