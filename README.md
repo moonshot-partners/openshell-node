@@ -165,6 +165,13 @@ For access to all generated protobuf types (security policies, providers, SSH se
 import { SandboxPolicy, NetworkPolicyRule } from "openshell-node/generated";
 ```
 
+## Releasing
+
+```bash
+npm version patch   # or minor/major — bumps package.json, creates git tag
+git push --follow-tags  # tag push triggers CI → npm publish + GitHub Release
+```
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.

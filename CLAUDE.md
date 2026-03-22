@@ -50,6 +50,15 @@ pnpm generate         # Regenerate TS from .proto (needs protoc)
 - Integration tests gated behind `OPENSHELL_TEST=1` env var
 - Generated code excluded from lint and format
 
+## Releasing
+
+```bash
+npm version patch   # or minor/major — bumps package.json, creates v* tag
+git push --follow-tags  # pushes tag → CI publishes to npm + creates GitHub Release
+```
+
+CI handles everything after the tag push: build, test, npm publish, GitHub Release with auto-generated notes.
+
 ## Commit Conventions
 
 Format: `type(scope): description`
