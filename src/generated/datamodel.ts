@@ -87,9 +87,13 @@ export interface Sandbox {
 export interface SandboxSpec {
   logLevel: string;
   environment: { [key: string]: string };
-  template: SandboxTemplate | undefined;
+  template:
+    | SandboxTemplate
+    | undefined;
   /** Required sandbox policy configuration. */
-  policy: SandboxPolicy | undefined;
+  policy:
+    | SandboxPolicy
+    | undefined;
   /** Provider names to attach to this sandbox. */
   providers: string[];
   /** Request NVIDIA GPU resources for this sandbox. */
@@ -301,13 +305,13 @@ export const Sandbox: MessageFns<Sandbox> = {
       createdAtMs: isSet(object.createdAtMs)
         ? globalThis.Number(object.createdAtMs)
         : isSet(object.created_at_ms)
-          ? globalThis.Number(object.created_at_ms)
-          : 0,
+        ? globalThis.Number(object.created_at_ms)
+        : 0,
       currentPolicyVersion: isSet(object.currentPolicyVersion)
         ? globalThis.Number(object.currentPolicyVersion)
         : isSet(object.current_policy_version)
-          ? globalThis.Number(object.current_policy_version)
-          : 0,
+        ? globalThis.Number(object.current_policy_version)
+        : 0,
     };
   },
 
@@ -348,14 +352,12 @@ export const Sandbox: MessageFns<Sandbox> = {
     message.id = object.id ?? "";
     message.name = object.name ?? "";
     message.namespace = object.namespace ?? "";
-    message.spec =
-      object.spec !== undefined && object.spec !== null
-        ? SandboxSpec.fromPartial(object.spec)
-        : undefined;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? SandboxStatus.fromPartial(object.status)
-        : undefined;
+    message.spec = (object.spec !== undefined && object.spec !== null)
+      ? SandboxSpec.fromPartial(object.spec)
+      : undefined;
+    message.status = (object.status !== undefined && object.status !== null)
+      ? SandboxStatus.fromPartial(object.status)
+      : undefined;
     message.phase = object.phase ?? 0;
     message.createdAtMs = object.createdAtMs ?? 0;
     message.currentPolicyVersion = object.currentPolicyVersion ?? 0;
@@ -364,14 +366,7 @@ export const Sandbox: MessageFns<Sandbox> = {
 };
 
 function createBaseSandboxSpec(): SandboxSpec {
-  return {
-    logLevel: "",
-    environment: {},
-    template: undefined,
-    policy: undefined,
-    providers: [],
-    gpu: false,
-  };
+  return { logLevel: "", environment: {}, template: undefined, policy: undefined, providers: [], gpu: false };
 }
 
 export const SandboxSpec: MessageFns<SandboxSpec> = {
@@ -380,10 +375,7 @@ export const SandboxSpec: MessageFns<SandboxSpec> = {
       writer.uint32(10).string(message.logLevel);
     }
     globalThis.Object.entries(message.environment).forEach(([key, value]: [string, string]) => {
-      SandboxSpec_EnvironmentEntry.encode(
-        { key: key as any, value },
-        writer.uint32(42).fork(),
-      ).join();
+      SandboxSpec_EnvironmentEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
     });
     if (message.template !== undefined) {
       SandboxTemplate.encode(message.template, writer.uint32(50).fork()).join();
@@ -472,16 +464,16 @@ export const SandboxSpec: MessageFns<SandboxSpec> = {
       logLevel: isSet(object.logLevel)
         ? globalThis.String(object.logLevel)
         : isSet(object.log_level)
-          ? globalThis.String(object.log_level)
-          : "",
+        ? globalThis.String(object.log_level)
+        : "",
       environment: isObject(object.environment)
         ? (globalThis.Object.entries(object.environment) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       template: isSet(object.template) ? SandboxTemplate.fromJSON(object.template) : undefined,
       policy: isSet(object.policy) ? SandboxPolicy.fromJSON(object.policy) : undefined,
@@ -527,22 +519,21 @@ export const SandboxSpec: MessageFns<SandboxSpec> = {
   fromPartial(object: DeepPartial<SandboxSpec>): SandboxSpec {
     const message = createBaseSandboxSpec();
     message.logLevel = object.logLevel ?? "";
-    message.environment = (
-      globalThis.Object.entries(object.environment ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
-    message.template =
-      object.template !== undefined && object.template !== null
-        ? SandboxTemplate.fromPartial(object.template)
-        : undefined;
-    message.policy =
-      object.policy !== undefined && object.policy !== null
-        ? SandboxPolicy.fromPartial(object.policy)
-        : undefined;
+    message.environment = (globalThis.Object.entries(object.environment ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.template = (object.template !== undefined && object.template !== null)
+      ? SandboxTemplate.fromPartial(object.template)
+      : undefined;
+    message.policy = (object.policy !== undefined && object.policy !== null)
+      ? SandboxPolicy.fromPartial(object.policy)
+      : undefined;
     message.providers = object.providers?.map((e) => e) || [];
     message.gpu = object.gpu ?? false;
     return message;
@@ -554,10 +545,7 @@ function createBaseSandboxSpec_EnvironmentEntry(): SandboxSpec_EnvironmentEntry 
 }
 
 export const SandboxSpec_EnvironmentEntry: MessageFns<SandboxSpec_EnvironmentEntry> = {
-  encode(
-    message: SandboxSpec_EnvironmentEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxSpec_EnvironmentEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -653,22 +641,13 @@ export const SandboxTemplate: MessageFns<SandboxTemplate> = {
       writer.uint32(26).string(message.agentSocket);
     }
     globalThis.Object.entries(message.labels).forEach(([key, value]: [string, string]) => {
-      SandboxTemplate_LabelsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(34).fork(),
-      ).join();
+      SandboxTemplate_LabelsEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
     });
     globalThis.Object.entries(message.annotations).forEach(([key, value]: [string, string]) => {
-      SandboxTemplate_AnnotationsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(42).fork(),
-      ).join();
+      SandboxTemplate_AnnotationsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
     });
     globalThis.Object.entries(message.environment).forEach(([key, value]: [string, string]) => {
-      SandboxTemplate_EnvironmentEntry.encode(
-        { key: key as any, value },
-        writer.uint32(50).fork(),
-      ).join();
+      SandboxTemplate_EnvironmentEntry.encode({ key: key as any, value }, writer.uint32(50).fork()).join();
     });
     if (message.resources !== undefined) {
       Struct.encode(Struct.wrap(message.resources), writer.uint32(58).fork()).join();
@@ -774,46 +753,46 @@ export const SandboxTemplate: MessageFns<SandboxTemplate> = {
       runtimeClassName: isSet(object.runtimeClassName)
         ? globalThis.String(object.runtimeClassName)
         : isSet(object.runtime_class_name)
-          ? globalThis.String(object.runtime_class_name)
-          : "",
+        ? globalThis.String(object.runtime_class_name)
+        : "",
       agentSocket: isSet(object.agentSocket)
         ? globalThis.String(object.agentSocket)
         : isSet(object.agent_socket)
-          ? globalThis.String(object.agent_socket)
-          : "",
+        ? globalThis.String(object.agent_socket)
+        : "",
       labels: isObject(object.labels)
         ? (globalThis.Object.entries(object.labels) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       annotations: isObject(object.annotations)
         ? (globalThis.Object.entries(object.annotations) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       environment: isObject(object.environment)
         ? (globalThis.Object.entries(object.environment) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       resources: isObject(object.resources) ? object.resources : undefined,
       volumeClaimTemplates: isObject(object.volumeClaimTemplates)
         ? object.volumeClaimTemplates
         : isObject(object.volume_claim_templates)
-          ? object.volume_claim_templates
-          : undefined,
+        ? object.volume_claim_templates
+        : undefined,
     };
   },
 
@@ -881,22 +860,24 @@ export const SandboxTemplate: MessageFns<SandboxTemplate> = {
       },
       {},
     );
-    message.annotations = (
-      globalThis.Object.entries(object.annotations ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
-    message.environment = (
-      globalThis.Object.entries(object.environment ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
+    message.annotations = (globalThis.Object.entries(object.annotations ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.environment = (globalThis.Object.entries(object.environment ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.resources = object.resources ?? undefined;
     message.volumeClaimTemplates = object.volumeClaimTemplates ?? undefined;
     return message;
@@ -908,10 +889,7 @@ function createBaseSandboxTemplate_LabelsEntry(): SandboxTemplate_LabelsEntry {
 }
 
 export const SandboxTemplate_LabelsEntry: MessageFns<SandboxTemplate_LabelsEntry> = {
-  encode(
-    message: SandboxTemplate_LabelsEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxTemplate_LabelsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -987,10 +965,7 @@ function createBaseSandboxTemplate_AnnotationsEntry(): SandboxTemplate_Annotatio
 }
 
 export const SandboxTemplate_AnnotationsEntry: MessageFns<SandboxTemplate_AnnotationsEntry> = {
-  encode(
-    message: SandboxTemplate_AnnotationsEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxTemplate_AnnotationsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1053,9 +1028,7 @@ export const SandboxTemplate_AnnotationsEntry: MessageFns<SandboxTemplate_Annota
   create(base?: DeepPartial<SandboxTemplate_AnnotationsEntry>): SandboxTemplate_AnnotationsEntry {
     return SandboxTemplate_AnnotationsEntry.fromPartial(base ?? {});
   },
-  fromPartial(
-    object: DeepPartial<SandboxTemplate_AnnotationsEntry>,
-  ): SandboxTemplate_AnnotationsEntry {
+  fromPartial(object: DeepPartial<SandboxTemplate_AnnotationsEntry>): SandboxTemplate_AnnotationsEntry {
     const message = createBaseSandboxTemplate_AnnotationsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
@@ -1068,10 +1041,7 @@ function createBaseSandboxTemplate_EnvironmentEntry(): SandboxTemplate_Environme
 }
 
 export const SandboxTemplate_EnvironmentEntry: MessageFns<SandboxTemplate_EnvironmentEntry> = {
-  encode(
-    message: SandboxTemplate_EnvironmentEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxTemplate_EnvironmentEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1134,9 +1104,7 @@ export const SandboxTemplate_EnvironmentEntry: MessageFns<SandboxTemplate_Enviro
   create(base?: DeepPartial<SandboxTemplate_EnvironmentEntry>): SandboxTemplate_EnvironmentEntry {
     return SandboxTemplate_EnvironmentEntry.fromPartial(base ?? {});
   },
-  fromPartial(
-    object: DeepPartial<SandboxTemplate_EnvironmentEntry>,
-  ): SandboxTemplate_EnvironmentEntry {
+  fromPartial(object: DeepPartial<SandboxTemplate_EnvironmentEntry>): SandboxTemplate_EnvironmentEntry {
     const message = createBaseSandboxTemplate_EnvironmentEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
@@ -1229,23 +1197,23 @@ export const SandboxStatus: MessageFns<SandboxStatus> = {
       sandboxName: isSet(object.sandboxName)
         ? globalThis.String(object.sandboxName)
         : isSet(object.sandbox_name)
-          ? globalThis.String(object.sandbox_name)
-          : "",
+        ? globalThis.String(object.sandbox_name)
+        : "",
       agentPod: isSet(object.agentPod)
         ? globalThis.String(object.agentPod)
         : isSet(object.agent_pod)
-          ? globalThis.String(object.agent_pod)
-          : "",
+        ? globalThis.String(object.agent_pod)
+        : "",
       agentFd: isSet(object.agentFd)
         ? globalThis.String(object.agentFd)
         : isSet(object.agent_fd)
-          ? globalThis.String(object.agent_fd)
-          : "",
+        ? globalThis.String(object.agent_fd)
+        : "",
       sandboxFd: isSet(object.sandboxFd)
         ? globalThis.String(object.sandboxFd)
         : isSet(object.sandbox_fd)
-          ? globalThis.String(object.sandbox_fd)
-          : "",
+        ? globalThis.String(object.sandbox_fd)
+        : "",
       conditions: globalThis.Array.isArray(object?.conditions)
         ? object.conditions.map((e: any) => SandboxCondition.fromJSON(e))
         : [],
@@ -1375,8 +1343,8 @@ export const SandboxCondition: MessageFns<SandboxCondition> = {
       lastTransitionTime: isSet(object.lastTransitionTime)
         ? globalThis.String(object.lastTransitionTime)
         : isSet(object.last_transition_time)
-          ? globalThis.String(object.last_transition_time)
-          : "",
+        ? globalThis.String(object.last_transition_time)
+        : "",
     };
   },
 
@@ -1507,21 +1475,21 @@ export const Provider: MessageFns<Provider> = {
       type: isSet(object.type) ? globalThis.String(object.type) : "",
       credentials: isObject(object.credentials)
         ? (globalThis.Object.entries(object.credentials) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       config: isObject(object.config)
         ? (globalThis.Object.entries(object.config) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
     };
   },
@@ -1566,14 +1534,15 @@ export const Provider: MessageFns<Provider> = {
     message.id = object.id ?? "";
     message.name = object.name ?? "";
     message.type = object.type ?? "";
-    message.credentials = (
-      globalThis.Object.entries(object.credentials ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
+    message.credentials = (globalThis.Object.entries(object.credentials ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.config = (globalThis.Object.entries(object.config ?? {}) as [string, string][]).reduce(
       (acc: { [key: string]: string }, [key, value]: [string, string]) => {
         if (value !== undefined) {
@@ -1592,10 +1561,7 @@ function createBaseProvider_CredentialsEntry(): Provider_CredentialsEntry {
 }
 
 export const Provider_CredentialsEntry: MessageFns<Provider_CredentialsEntry> = {
-  encode(
-    message: Provider_CredentialsEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: Provider_CredentialsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1744,15 +1710,11 @@ export const Provider_ConfigEntry: MessageFns<Provider_ConfigEntry> = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-    ? globalThis.Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());

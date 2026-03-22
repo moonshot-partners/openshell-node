@@ -73,15 +73,25 @@ export interface Struct_FieldsEntry {
  */
 export interface Value {
   /** Represents a null value. */
-  nullValue?: NullValue | undefined;
+  nullValue?:
+    | NullValue
+    | undefined;
   /** Represents a double value. */
-  numberValue?: number | undefined;
+  numberValue?:
+    | number
+    | undefined;
   /** Represents a string value. */
-  stringValue?: string | undefined;
+  stringValue?:
+    | string
+    | undefined;
   /** Represents a boolean value. */
-  boolValue?: boolean | undefined;
+  boolValue?:
+    | boolean
+    | undefined;
   /** Represents a structured value. */
-  structValue?: { [key: string]: any } | undefined;
+  structValue?:
+    | { [key: string]: any }
+    | undefined;
   /** Represents a repeated `Value`. */
   listValue?: Array<any> | undefined;
 }
@@ -141,12 +151,12 @@ export const Struct: MessageFns<Struct> & StructWrapperFns = {
     return {
       fields: isObject(object.fields)
         ? (globalThis.Object.entries(object.fields) as [string, any][]).reduce(
-            (acc: { [key: string]: any | undefined }, [key, value]: [string, any]) => {
-              acc[key] = value as any | undefined;
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: any | undefined }, [key, value]: [string, any]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          },
+          {},
+        )
         : {},
     };
   },
@@ -170,14 +180,15 @@ export const Struct: MessageFns<Struct> & StructWrapperFns = {
   },
   fromPartial(object: DeepPartial<Struct>): Struct {
     const message = createBaseStruct();
-    message.fields = (
-      globalThis.Object.entries(object.fields ?? {}) as [string, any | undefined][]
-    ).reduce((acc: { [key: string]: any | undefined }, [key, value]: [string, any | undefined]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
+    message.fields = (globalThis.Object.entries(object.fields ?? {}) as [string, any | undefined][]).reduce(
+      (acc: { [key: string]: any | undefined }, [key, value]: [string, any | undefined]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 
@@ -382,33 +393,33 @@ export const Value: MessageFns<Value> & AnyValueWrapperFns = {
       nullValue: isSet(object.nullValue)
         ? nullValueFromJSON(object.nullValue)
         : isSet(object.null_value)
-          ? nullValueFromJSON(object.null_value)
-          : undefined,
+        ? nullValueFromJSON(object.null_value)
+        : undefined,
       numberValue: isSet(object.numberValue)
         ? globalThis.Number(object.numberValue)
         : isSet(object.number_value)
-          ? globalThis.Number(object.number_value)
-          : undefined,
+        ? globalThis.Number(object.number_value)
+        : undefined,
       stringValue: isSet(object.stringValue)
         ? globalThis.String(object.stringValue)
         : isSet(object.string_value)
-          ? globalThis.String(object.string_value)
-          : undefined,
+        ? globalThis.String(object.string_value)
+        : undefined,
       boolValue: isSet(object.boolValue)
         ? globalThis.Boolean(object.boolValue)
         : isSet(object.bool_value)
-          ? globalThis.Boolean(object.bool_value)
-          : undefined,
+        ? globalThis.Boolean(object.bool_value)
+        : undefined,
       structValue: isObject(object.structValue)
         ? object.structValue
         : isObject(object.struct_value)
-          ? object.struct_value
-          : undefined,
+        ? object.struct_value
+        : undefined,
       listValue: globalThis.Array.isArray(object.listValue)
         ? [...object.listValue]
         : globalThis.Array.isArray(object.list_value)
-          ? [...object.list_value]
-          : undefined,
+        ? [...object.list_value]
+        : undefined,
     };
   },
 
@@ -561,15 +572,11 @@ export const ListValue: MessageFns<ListValue> & ListValueWrapperFns = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-    ? globalThis.Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 function isObject(value: any): boolean {
   return typeof value === "object" && value !== null;

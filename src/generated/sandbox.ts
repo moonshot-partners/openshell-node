@@ -94,11 +94,17 @@ export interface SandboxPolicy {
   /** Policy version. */
   version: number;
   /** Filesystem access policy. */
-  filesystem: FilesystemPolicy | undefined;
+  filesystem:
+    | FilesystemPolicy
+    | undefined;
   /** Landlock configuration. */
-  landlock: LandlockPolicy | undefined;
+  landlock:
+    | LandlockPolicy
+    | undefined;
   /** Process execution policy. */
-  process: ProcessPolicy | undefined;
+  process:
+    | ProcessPolicy
+    | undefined;
   /** Network access policies keyed by name (e.g. "claude_code", "gitlab"). */
   networkPolicies: { [key: string]: NetworkPolicyRule };
 }
@@ -219,7 +225,8 @@ export interface GetSandboxConfigRequest {
 }
 
 /** Request to get gateway-global settings. */
-export interface GetGatewayConfigRequest {}
+export interface GetGatewayConfigRequest {
+}
 
 /** Response containing gateway-global settings. */
 export interface GetGatewayConfigResponse {
@@ -254,7 +261,9 @@ export interface EffectiveSetting {
 /** Response containing effective sandbox settings and policy. */
 export interface GetSandboxConfigResponse {
   /** The sandbox policy configuration. */
-  policy: SandboxPolicy | undefined;
+  policy:
+    | SandboxPolicy
+    | undefined;
   /** Current policy version (monotonically increasing per sandbox). */
   version: number;
   /** SHA-256 hash of the serialized policy payload. */
@@ -281,13 +290,7 @@ export interface GetSandboxConfigResponse_SettingsEntry {
 }
 
 function createBaseSandboxPolicy(): SandboxPolicy {
-  return {
-    version: 0,
-    filesystem: undefined,
-    landlock: undefined,
-    process: undefined,
-    networkPolicies: {},
-  };
+  return { version: 0, filesystem: undefined, landlock: undefined, process: undefined, networkPolicies: {} };
 }
 
 export const SandboxPolicy: MessageFns<SandboxPolicy> = {
@@ -304,14 +307,9 @@ export const SandboxPolicy: MessageFns<SandboxPolicy> = {
     if (message.process !== undefined) {
       ProcessPolicy.encode(message.process, writer.uint32(34).fork()).join();
     }
-    globalThis.Object.entries(message.networkPolicies).forEach(
-      ([key, value]: [string, NetworkPolicyRule]) => {
-        SandboxPolicy_NetworkPoliciesEntry.encode(
-          { key: key as any, value },
-          writer.uint32(42).fork(),
-        ).join();
-      },
-    );
+    globalThis.Object.entries(message.networkPolicies).forEach(([key, value]: [string, NetworkPolicyRule]) => {
+      SandboxPolicy_NetworkPoliciesEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     return writer;
   },
 
@@ -377,28 +375,26 @@ export const SandboxPolicy: MessageFns<SandboxPolicy> = {
   fromJSON(object: any): SandboxPolicy {
     return {
       version: isSet(object.version) ? globalThis.Number(object.version) : 0,
-      filesystem: isSet(object.filesystem)
-        ? FilesystemPolicy.fromJSON(object.filesystem)
-        : undefined,
+      filesystem: isSet(object.filesystem) ? FilesystemPolicy.fromJSON(object.filesystem) : undefined,
       landlock: isSet(object.landlock) ? LandlockPolicy.fromJSON(object.landlock) : undefined,
       process: isSet(object.process) ? ProcessPolicy.fromJSON(object.process) : undefined,
       networkPolicies: isObject(object.networkPolicies)
         ? (globalThis.Object.entries(object.networkPolicies) as [string, any][]).reduce(
-            (acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, any]) => {
-              acc[key] = NetworkPolicyRule.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, any]) => {
+            acc[key] = NetworkPolicyRule.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
         : isObject(object.network_policies)
-          ? (globalThis.Object.entries(object.network_policies) as [string, any][]).reduce(
-              (acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, any]) => {
-                acc[key] = NetworkPolicyRule.fromJSON(value);
-                return acc;
-              },
-              {},
-            )
-          : {},
+        ? (globalThis.Object.entries(object.network_policies) as [string, any][]).reduce(
+          (acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, any]) => {
+            acc[key] = NetworkPolicyRule.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
     };
   },
 
@@ -417,10 +413,7 @@ export const SandboxPolicy: MessageFns<SandboxPolicy> = {
       obj.process = ProcessPolicy.toJSON(message.process);
     }
     if (message.networkPolicies) {
-      const entries = globalThis.Object.entries(message.networkPolicies) as [
-        string,
-        NetworkPolicyRule,
-      ][];
+      const entries = globalThis.Object.entries(message.networkPolicies) as [string, NetworkPolicyRule][];
       if (entries.length > 0) {
         obj.networkPolicies = {};
         entries.forEach(([k, v]) => {
@@ -437,29 +430,22 @@ export const SandboxPolicy: MessageFns<SandboxPolicy> = {
   fromPartial(object: DeepPartial<SandboxPolicy>): SandboxPolicy {
     const message = createBaseSandboxPolicy();
     message.version = object.version ?? 0;
-    message.filesystem =
-      object.filesystem !== undefined && object.filesystem !== null
-        ? FilesystemPolicy.fromPartial(object.filesystem)
-        : undefined;
-    message.landlock =
-      object.landlock !== undefined && object.landlock !== null
-        ? LandlockPolicy.fromPartial(object.landlock)
-        : undefined;
-    message.process =
-      object.process !== undefined && object.process !== null
-        ? ProcessPolicy.fromPartial(object.process)
-        : undefined;
-    message.networkPolicies = (
-      globalThis.Object.entries(object.networkPolicies ?? {}) as [string, NetworkPolicyRule][]
-    ).reduce(
-      (acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, NetworkPolicyRule]) => {
+    message.filesystem = (object.filesystem !== undefined && object.filesystem !== null)
+      ? FilesystemPolicy.fromPartial(object.filesystem)
+      : undefined;
+    message.landlock = (object.landlock !== undefined && object.landlock !== null)
+      ? LandlockPolicy.fromPartial(object.landlock)
+      : undefined;
+    message.process = (object.process !== undefined && object.process !== null)
+      ? ProcessPolicy.fromPartial(object.process)
+      : undefined;
+    message.networkPolicies = (globalThis.Object.entries(object.networkPolicies ?? {}) as [string, NetworkPolicyRule][])
+      .reduce((acc: { [key: string]: NetworkPolicyRule }, [key, value]: [string, NetworkPolicyRule]) => {
         if (value !== undefined) {
           acc[key] = NetworkPolicyRule.fromPartial(value);
         }
         return acc;
-      },
-      {},
-    );
+      }, {});
     return message;
   },
 };
@@ -469,10 +455,7 @@ function createBaseSandboxPolicy_NetworkPoliciesEntry(): SandboxPolicy_NetworkPo
 }
 
 export const SandboxPolicy_NetworkPoliciesEntry: MessageFns<SandboxPolicy_NetworkPoliciesEntry> = {
-  encode(
-    message: SandboxPolicy_NetworkPoliciesEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxPolicy_NetworkPoliciesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -532,20 +515,15 @@ export const SandboxPolicy_NetworkPoliciesEntry: MessageFns<SandboxPolicy_Networ
     return obj;
   },
 
-  create(
-    base?: DeepPartial<SandboxPolicy_NetworkPoliciesEntry>,
-  ): SandboxPolicy_NetworkPoliciesEntry {
+  create(base?: DeepPartial<SandboxPolicy_NetworkPoliciesEntry>): SandboxPolicy_NetworkPoliciesEntry {
     return SandboxPolicy_NetworkPoliciesEntry.fromPartial(base ?? {});
   },
-  fromPartial(
-    object: DeepPartial<SandboxPolicy_NetworkPoliciesEntry>,
-  ): SandboxPolicy_NetworkPoliciesEntry {
+  fromPartial(object: DeepPartial<SandboxPolicy_NetworkPoliciesEntry>): SandboxPolicy_NetworkPoliciesEntry {
     const message = createBaseSandboxPolicy_NetworkPoliciesEntry();
     message.key = object.key ?? "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? NetworkPolicyRule.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? NetworkPolicyRule.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
@@ -613,18 +591,18 @@ export const FilesystemPolicy: MessageFns<FilesystemPolicy> = {
       includeWorkdir: isSet(object.includeWorkdir)
         ? globalThis.Boolean(object.includeWorkdir)
         : isSet(object.include_workdir)
-          ? globalThis.Boolean(object.include_workdir)
-          : false,
+        ? globalThis.Boolean(object.include_workdir)
+        : false,
       readOnly: globalThis.Array.isArray(object?.readOnly)
         ? object.readOnly.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.read_only)
-          ? object.read_only.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.read_only.map((e: any) => globalThis.String(e))
+        : [],
       readWrite: globalThis.Array.isArray(object?.readWrite)
         ? object.readWrite.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.read_write)
-          ? object.read_write.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.read_write.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -691,9 +669,7 @@ export const LandlockPolicy: MessageFns<LandlockPolicy> = {
   },
 
   fromJSON(object: any): LandlockPolicy {
-    return {
-      compatibility: isSet(object.compatibility) ? globalThis.String(object.compatibility) : "",
-    };
+    return { compatibility: isSet(object.compatibility) ? globalThis.String(object.compatibility) : "" };
   },
 
   toJSON(message: LandlockPolicy): unknown {
@@ -766,13 +742,13 @@ export const ProcessPolicy: MessageFns<ProcessPolicy> = {
       runAsUser: isSet(object.runAsUser)
         ? globalThis.String(object.runAsUser)
         : isSet(object.run_as_user)
-          ? globalThis.String(object.run_as_user)
-          : "",
+        ? globalThis.String(object.run_as_user)
+        : "",
       runAsGroup: isSet(object.runAsGroup)
         ? globalThis.String(object.runAsGroup)
         : isSet(object.run_as_group)
-          ? globalThis.String(object.run_as_group)
-          : "",
+        ? globalThis.String(object.run_as_group)
+        : "",
     };
   },
 
@@ -1048,17 +1024,13 @@ export const NetworkEndpoint: MessageFns<NetworkEndpoint> = {
       tls: isSet(object.tls) ? globalThis.String(object.tls) : "",
       enforcement: isSet(object.enforcement) ? globalThis.String(object.enforcement) : "",
       access: isSet(object.access) ? globalThis.String(object.access) : "",
-      rules: globalThis.Array.isArray(object?.rules)
-        ? object.rules.map((e: any) => L7Rule.fromJSON(e))
-        : [],
+      rules: globalThis.Array.isArray(object?.rules) ? object.rules.map((e: any) => L7Rule.fromJSON(e)) : [],
       allowedIps: globalThis.Array.isArray(object?.allowedIps)
         ? object.allowedIps.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.allowed_ips)
-          ? object.allowed_ips.map((e: any) => globalThis.String(e))
-          : [],
-      ports: globalThis.Array.isArray(object?.ports)
-        ? object.ports.map((e: any) => globalThis.Number(e))
+        ? object.allowed_ips.map((e: any) => globalThis.String(e))
         : [],
+      ports: globalThis.Array.isArray(object?.ports) ? object.ports.map((e: any) => globalThis.Number(e)) : [],
     };
   },
 
@@ -1165,10 +1137,9 @@ export const L7Rule: MessageFns<L7Rule> = {
   },
   fromPartial(object: DeepPartial<L7Rule>): L7Rule {
     const message = createBaseL7Rule();
-    message.allow =
-      object.allow !== undefined && object.allow !== null
-        ? L7Allow.fromPartial(object.allow)
-        : undefined;
+    message.allow = (object.allow !== undefined && object.allow !== null)
+      ? L7Allow.fromPartial(object.allow)
+      : undefined;
     return message;
   },
 };
@@ -1346,10 +1317,7 @@ function createBaseGetSandboxConfigRequest(): GetSandboxConfigRequest {
 }
 
 export const GetSandboxConfigRequest: MessageFns<GetSandboxConfigRequest> = {
-  encode(
-    message: GetSandboxConfigRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetSandboxConfigRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.sandboxId !== "") {
       writer.uint32(10).string(message.sandboxId);
     }
@@ -1385,8 +1353,8 @@ export const GetSandboxConfigRequest: MessageFns<GetSandboxConfigRequest> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
     };
   },
 
@@ -1456,15 +1424,9 @@ function createBaseGetGatewayConfigResponse(): GetGatewayConfigResponse {
 }
 
 export const GetGatewayConfigResponse: MessageFns<GetGatewayConfigResponse> = {
-  encode(
-    message: GetGatewayConfigResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetGatewayConfigResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     globalThis.Object.entries(message.settings).forEach(([key, value]: [string, SettingValue]) => {
-      GetGatewayConfigResponse_SettingsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(10).fork(),
-      ).join();
+      GetGatewayConfigResponse_SettingsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
     });
     if (message.settingsRevision !== 0) {
       writer.uint32(16).uint64(message.settingsRevision);
@@ -1511,18 +1473,18 @@ export const GetGatewayConfigResponse: MessageFns<GetGatewayConfigResponse> = {
     return {
       settings: isObject(object.settings)
         ? (globalThis.Object.entries(object.settings) as [string, any][]).reduce(
-            (acc: { [key: string]: SettingValue }, [key, value]: [string, any]) => {
-              acc[key] = SettingValue.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: SettingValue }, [key, value]: [string, any]) => {
+            acc[key] = SettingValue.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       settingsRevision: isSet(object.settingsRevision)
         ? globalThis.Number(object.settingsRevision)
         : isSet(object.settings_revision)
-          ? globalThis.Number(object.settings_revision)
-          : 0,
+        ? globalThis.Number(object.settings_revision)
+        : 0,
     };
   },
 
@@ -1548,14 +1510,15 @@ export const GetGatewayConfigResponse: MessageFns<GetGatewayConfigResponse> = {
   },
   fromPartial(object: DeepPartial<GetGatewayConfigResponse>): GetGatewayConfigResponse {
     const message = createBaseGetGatewayConfigResponse();
-    message.settings = (
-      globalThis.Object.entries(object.settings ?? {}) as [string, SettingValue][]
-    ).reduce((acc: { [key: string]: SettingValue }, [key, value]: [string, SettingValue]) => {
-      if (value !== undefined) {
-        acc[key] = SettingValue.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.settings = (globalThis.Object.entries(object.settings ?? {}) as [string, SettingValue][]).reduce(
+      (acc: { [key: string]: SettingValue }, [key, value]: [string, SettingValue]) => {
+        if (value !== undefined) {
+          acc[key] = SettingValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.settingsRevision = object.settingsRevision ?? 0;
     return message;
   },
@@ -1565,99 +1528,82 @@ function createBaseGetGatewayConfigResponse_SettingsEntry(): GetGatewayConfigRes
   return { key: "", value: undefined };
 }
 
-export const GetGatewayConfigResponse_SettingsEntry: MessageFns<GetGatewayConfigResponse_SettingsEntry> =
-  {
-    encode(
-      message: GetGatewayConfigResponse_SettingsEntry,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.key !== "") {
-        writer.uint32(10).string(message.key);
-      }
-      if (message.value !== undefined) {
-        SettingValue.encode(message.value, writer.uint32(18).fork()).join();
-      }
-      return writer;
-    },
+export const GetGatewayConfigResponse_SettingsEntry: MessageFns<GetGatewayConfigResponse_SettingsEntry> = {
+  encode(message: GetGatewayConfigResponse_SettingsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      SettingValue.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
 
-    decode(
-      input: BinaryReader | Uint8Array,
-      length?: number,
-    ): GetGatewayConfigResponse_SettingsEntry {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseGetGatewayConfigResponse_SettingsEntry();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.key = reader.string();
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): GetGatewayConfigResponse_SettingsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetGatewayConfigResponse_SettingsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
-          case 2: {
-            if (tag !== 18) {
-              break;
-            }
 
-            message.value = SettingValue.decode(reader, reader.uint32());
-            continue;
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
           }
+
+          message.value = SettingValue.decode(reader, reader.uint32());
+          continue;
         }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
       }
-      return message;
-    },
-
-    fromJSON(object: any): GetGatewayConfigResponse_SettingsEntry {
-      return {
-        key: isSet(object.key) ? globalThis.String(object.key) : "",
-        value: isSet(object.value) ? SettingValue.fromJSON(object.value) : undefined,
-      };
-    },
-
-    toJSON(message: GetGatewayConfigResponse_SettingsEntry): unknown {
-      const obj: any = {};
-      if (message.key !== "") {
-        obj.key = message.key;
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
       }
-      if (message.value !== undefined) {
-        obj.value = SettingValue.toJSON(message.value);
-      }
-      return obj;
-    },
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<GetGatewayConfigResponse_SettingsEntry>,
-    ): GetGatewayConfigResponse_SettingsEntry {
-      return GetGatewayConfigResponse_SettingsEntry.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<GetGatewayConfigResponse_SettingsEntry>,
-    ): GetGatewayConfigResponse_SettingsEntry {
-      const message = createBaseGetGatewayConfigResponse_SettingsEntry();
-      message.key = object.key ?? "";
-      message.value =
-        object.value !== undefined && object.value !== null
-          ? SettingValue.fromPartial(object.value)
-          : undefined;
-      return message;
-    },
-  };
+  fromJSON(object: any): GetGatewayConfigResponse_SettingsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? SettingValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: GetGatewayConfigResponse_SettingsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = SettingValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetGatewayConfigResponse_SettingsEntry>): GetGatewayConfigResponse_SettingsEntry {
+    return GetGatewayConfigResponse_SettingsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetGatewayConfigResponse_SettingsEntry>): GetGatewayConfigResponse_SettingsEntry {
+    const message = createBaseGetGatewayConfigResponse_SettingsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? SettingValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
 
 function createBaseSettingValue(): SettingValue {
-  return {
-    stringValue: undefined,
-    boolValue: undefined,
-    intValue: undefined,
-    bytesValue: undefined,
-  };
+  return { stringValue: undefined, boolValue: undefined, intValue: undefined, bytesValue: undefined };
 }
 
 export const SettingValue: MessageFns<SettingValue> = {
@@ -1730,23 +1676,23 @@ export const SettingValue: MessageFns<SettingValue> = {
       stringValue: isSet(object.stringValue)
         ? globalThis.String(object.stringValue)
         : isSet(object.string_value)
-          ? globalThis.String(object.string_value)
-          : undefined,
+        ? globalThis.String(object.string_value)
+        : undefined,
       boolValue: isSet(object.boolValue)
         ? globalThis.Boolean(object.boolValue)
         : isSet(object.bool_value)
-          ? globalThis.Boolean(object.bool_value)
-          : undefined,
+        ? globalThis.Boolean(object.bool_value)
+        : undefined,
       intValue: isSet(object.intValue)
         ? globalThis.Number(object.intValue)
         : isSet(object.int_value)
-          ? globalThis.Number(object.int_value)
-          : undefined,
+        ? globalThis.Number(object.int_value)
+        : undefined,
       bytesValue: isSet(object.bytesValue)
         ? bytesFromBase64(object.bytesValue)
         : isSet(object.bytes_value)
-          ? bytesFromBase64(object.bytes_value)
-          : undefined,
+        ? bytesFromBase64(object.bytes_value)
+        : undefined,
     };
   },
 
@@ -1850,10 +1796,9 @@ export const EffectiveSetting: MessageFns<EffectiveSetting> = {
   },
   fromPartial(object: DeepPartial<EffectiveSetting>): EffectiveSetting {
     const message = createBaseEffectiveSetting();
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? SettingValue.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? SettingValue.fromPartial(object.value)
+      : undefined;
     message.scope = object.scope ?? 0;
     return message;
   },
@@ -1872,10 +1817,7 @@ function createBaseGetSandboxConfigResponse(): GetSandboxConfigResponse {
 }
 
 export const GetSandboxConfigResponse: MessageFns<GetSandboxConfigResponse> = {
-  encode(
-    message: GetSandboxConfigResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetSandboxConfigResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.policy !== undefined) {
       SandboxPolicy.encode(message.policy, writer.uint32(10).fork()).join();
     }
@@ -1885,14 +1827,9 @@ export const GetSandboxConfigResponse: MessageFns<GetSandboxConfigResponse> = {
     if (message.policyHash !== "") {
       writer.uint32(26).string(message.policyHash);
     }
-    globalThis.Object.entries(message.settings).forEach(
-      ([key, value]: [string, EffectiveSetting]) => {
-        GetSandboxConfigResponse_SettingsEntry.encode(
-          { key: key as any, value },
-          writer.uint32(34).fork(),
-        ).join();
-      },
-    );
+    globalThis.Object.entries(message.settings).forEach(([key, value]: [string, EffectiveSetting]) => {
+      GetSandboxConfigResponse_SettingsEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+    });
     if (message.configRevision !== 0) {
       writer.uint32(40).uint64(message.configRevision);
     }
@@ -1987,32 +1924,32 @@ export const GetSandboxConfigResponse: MessageFns<GetSandboxConfigResponse> = {
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
       settings: isObject(object.settings)
         ? (globalThis.Object.entries(object.settings) as [string, any][]).reduce(
-            (acc: { [key: string]: EffectiveSetting }, [key, value]: [string, any]) => {
-              acc[key] = EffectiveSetting.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: EffectiveSetting }, [key, value]: [string, any]) => {
+            acc[key] = EffectiveSetting.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       configRevision: isSet(object.configRevision)
         ? globalThis.Number(object.configRevision)
         : isSet(object.config_revision)
-          ? globalThis.Number(object.config_revision)
-          : 0,
+        ? globalThis.Number(object.config_revision)
+        : 0,
       policySource: isSet(object.policySource)
         ? policySourceFromJSON(object.policySource)
         : isSet(object.policy_source)
-          ? policySourceFromJSON(object.policy_source)
-          : 0,
+        ? policySourceFromJSON(object.policy_source)
+        : 0,
       globalPolicyVersion: isSet(object.globalPolicyVersion)
         ? globalThis.Number(object.globalPolicyVersion)
         : isSet(object.global_policy_version)
-          ? globalThis.Number(object.global_policy_version)
-          : 0,
+        ? globalThis.Number(object.global_policy_version)
+        : 0,
     };
   },
 
@@ -2053,15 +1990,12 @@ export const GetSandboxConfigResponse: MessageFns<GetSandboxConfigResponse> = {
   },
   fromPartial(object: DeepPartial<GetSandboxConfigResponse>): GetSandboxConfigResponse {
     const message = createBaseGetSandboxConfigResponse();
-    message.policy =
-      object.policy !== undefined && object.policy !== null
-        ? SandboxPolicy.fromPartial(object.policy)
-        : undefined;
+    message.policy = (object.policy !== undefined && object.policy !== null)
+      ? SandboxPolicy.fromPartial(object.policy)
+      : undefined;
     message.version = object.version ?? 0;
     message.policyHash = object.policyHash ?? "";
-    message.settings = (
-      globalThis.Object.entries(object.settings ?? {}) as [string, EffectiveSetting][]
-    ).reduce(
+    message.settings = (globalThis.Object.entries(object.settings ?? {}) as [string, EffectiveSetting][]).reduce(
       (acc: { [key: string]: EffectiveSetting }, [key, value]: [string, EffectiveSetting]) => {
         if (value !== undefined) {
           acc[key] = EffectiveSetting.fromPartial(value);
@@ -2081,91 +2015,79 @@ function createBaseGetSandboxConfigResponse_SettingsEntry(): GetSandboxConfigRes
   return { key: "", value: undefined };
 }
 
-export const GetSandboxConfigResponse_SettingsEntry: MessageFns<GetSandboxConfigResponse_SettingsEntry> =
-  {
-    encode(
-      message: GetSandboxConfigResponse_SettingsEntry,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.key !== "") {
-        writer.uint32(10).string(message.key);
-      }
-      if (message.value !== undefined) {
-        EffectiveSetting.encode(message.value, writer.uint32(18).fork()).join();
-      }
-      return writer;
-    },
+export const GetSandboxConfigResponse_SettingsEntry: MessageFns<GetSandboxConfigResponse_SettingsEntry> = {
+  encode(message: GetSandboxConfigResponse_SettingsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      EffectiveSetting.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
 
-    decode(
-      input: BinaryReader | Uint8Array,
-      length?: number,
-    ): GetSandboxConfigResponse_SettingsEntry {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseGetSandboxConfigResponse_SettingsEntry();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.key = reader.string();
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): GetSandboxConfigResponse_SettingsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSandboxConfigResponse_SettingsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
-          case 2: {
-            if (tag !== 18) {
-              break;
-            }
 
-            message.value = EffectiveSetting.decode(reader, reader.uint32());
-            continue;
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
           }
+
+          message.value = EffectiveSetting.decode(reader, reader.uint32());
+          continue;
         }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
       }
-      return message;
-    },
-
-    fromJSON(object: any): GetSandboxConfigResponse_SettingsEntry {
-      return {
-        key: isSet(object.key) ? globalThis.String(object.key) : "",
-        value: isSet(object.value) ? EffectiveSetting.fromJSON(object.value) : undefined,
-      };
-    },
-
-    toJSON(message: GetSandboxConfigResponse_SettingsEntry): unknown {
-      const obj: any = {};
-      if (message.key !== "") {
-        obj.key = message.key;
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
       }
-      if (message.value !== undefined) {
-        obj.value = EffectiveSetting.toJSON(message.value);
-      }
-      return obj;
-    },
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<GetSandboxConfigResponse_SettingsEntry>,
-    ): GetSandboxConfigResponse_SettingsEntry {
-      return GetSandboxConfigResponse_SettingsEntry.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<GetSandboxConfigResponse_SettingsEntry>,
-    ): GetSandboxConfigResponse_SettingsEntry {
-      const message = createBaseGetSandboxConfigResponse_SettingsEntry();
-      message.key = object.key ?? "";
-      message.value =
-        object.value !== undefined && object.value !== null
-          ? EffectiveSetting.fromPartial(object.value)
-          : undefined;
-      return message;
-    },
-  };
+  fromJSON(object: any): GetSandboxConfigResponse_SettingsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? EffectiveSetting.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: GetSandboxConfigResponse_SettingsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = EffectiveSetting.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetSandboxConfigResponse_SettingsEntry>): GetSandboxConfigResponse_SettingsEntry {
+    return GetSandboxConfigResponse_SettingsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetSandboxConfigResponse_SettingsEntry>): GetSandboxConfigResponse_SettingsEntry {
+    const message = createBaseGetSandboxConfigResponse_SettingsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? EffectiveSetting.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
 
 function bytesFromBase64(b64: string): Uint8Array {
   if ((globalThis as any).Buffer) {
@@ -2194,15 +2116,11 @@ function base64FromBytes(arr: Uint8Array): string {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-    ? globalThis.Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());

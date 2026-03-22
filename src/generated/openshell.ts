@@ -123,7 +123,8 @@ export function serviceStatusToJSON(object: ServiceStatus): string {
 }
 
 /** Health check request. */
-export interface HealthRequest {}
+export interface HealthRequest {
+}
 
 /** Health check response. */
 export interface HealthResponse {
@@ -135,7 +136,9 @@ export interface HealthResponse {
 
 /** Create sandbox request. */
 export interface CreateSandboxRequest {
-  spec: SandboxSpec | undefined;
+  spec:
+    | SandboxSpec
+    | undefined;
   /** Optional user-supplied sandbox name. When empty the server generates one. */
   name: string;
 }
@@ -305,13 +308,21 @@ export interface WatchSandboxRequest {
 /** One event in a sandbox watch stream. */
 export interface SandboxStreamEvent {
   /** Latest sandbox snapshot. */
-  sandbox?: Sandbox | undefined;
+  sandbox?:
+    | Sandbox
+    | undefined;
   /** One server log line/event. */
-  log?: SandboxLogLine | undefined;
+  log?:
+    | SandboxLogLine
+    | undefined;
   /** One platform event. */
-  event?: PlatformEvent | undefined;
+  event?:
+    | PlatformEvent
+    | undefined;
   /** Warning from the server (e.g. missed messages due to lag). */
-  warning?: SandboxStreamWarning | undefined;
+  warning?:
+    | SandboxStreamWarning
+    | undefined;
   /** Draft policy update notification. */
   draftPolicyUpdate?: DraftPolicyUpdate | undefined;
 }
@@ -437,11 +448,15 @@ export interface UpdateConfigRequest {
    * Global scope (`global=true`):
    * - applies to all sandboxes in full (no merge).
    */
-  policy: SandboxPolicy | undefined;
+  policy:
+    | SandboxPolicy
+    | undefined;
   /** Optional single setting key to mutate. */
   settingKey: string;
   /** Setting value for upsert operations. */
-  settingValue: SettingValue | undefined;
+  settingValue:
+    | SettingValue
+    | undefined;
   /**
    * Delete the setting key from scope.
    * Sandbox-scoped deletes are rejected; only global delete is supported.
@@ -476,7 +491,9 @@ export interface GetSandboxPolicyStatusRequest {
 /** Get sandbox policy status response. */
 export interface GetSandboxPolicyStatusResponse {
   /** The queried policy revision. */
-  revision: SandboxPolicyRevision | undefined;
+  revision:
+    | SandboxPolicyRevision
+    | undefined;
   /** The currently active (loaded) policy version for this sandbox. */
   activeVersion: number;
 }
@@ -509,7 +526,8 @@ export interface ReportPolicyStatusRequest {
 }
 
 /** Report policy status response. */
-export interface ReportPolicyStatusResponse {}
+export interface ReportPolicyStatusResponse {
+}
 
 /** A versioned policy revision with metadata. */
 export interface SandboxPolicyRevision {
@@ -552,7 +570,8 @@ export interface PushSandboxLogsRequest {
 }
 
 /** Push sandbox logs response. */
-export interface PushSandboxLogsResponse {}
+export interface PushSandboxLogsResponse {
+}
 
 /** Get sandbox logs response. */
 export interface GetSandboxLogsResponse {
@@ -621,7 +640,9 @@ export interface PolicyChunk {
   /** Proposed network_policies map key. */
   ruleName: string;
   /** The proposed network policy rule. */
-  proposedRule: NetworkPolicyRule | undefined;
+  proposedRule:
+    | NetworkPolicyRule
+    | undefined;
   /** Human-readable explanation of why this rule is proposed. */
   rationale: string;
   /** Security concerns flagged by analysis (empty if none). */
@@ -725,7 +746,8 @@ export interface RejectDraftChunkRequest {
   reason: string;
 }
 
-export interface RejectDraftChunkResponse {}
+export interface RejectDraftChunkResponse {
+}
 
 /** Approve all pending chunks. */
 export interface ApproveAllDraftChunksRequest {
@@ -756,7 +778,8 @@ export interface EditDraftChunkRequest {
   proposedRule: NetworkPolicyRule | undefined;
 }
 
-export interface EditDraftChunkResponse {}
+export interface EditDraftChunkResponse {
+}
 
 /** Reverse an approval (remove merged rule from active policy). */
 export interface UndoDraftChunkRequest {
@@ -998,10 +1021,9 @@ export const CreateSandboxRequest: MessageFns<CreateSandboxRequest> = {
   },
   fromPartial(object: DeepPartial<CreateSandboxRequest>): CreateSandboxRequest {
     const message = createBaseCreateSandboxRequest();
-    message.spec =
-      object.spec !== undefined && object.spec !== null
-        ? SandboxSpec.fromPartial(object.spec)
-        : undefined;
+    message.spec = (object.spec !== undefined && object.spec !== null)
+      ? SandboxSpec.fromPartial(object.spec)
+      : undefined;
     message.name = object.name ?? "";
     return message;
   },
@@ -1252,10 +1274,9 @@ export const SandboxResponse: MessageFns<SandboxResponse> = {
   },
   fromPartial(object: DeepPartial<SandboxResponse>): SandboxResponse {
     const message = createBaseSandboxResponse();
-    message.sandbox =
-      object.sandbox !== undefined && object.sandbox !== null
-        ? Sandbox.fromPartial(object.sandbox)
-        : undefined;
+    message.sandbox = (object.sandbox !== undefined && object.sandbox !== null)
+      ? Sandbox.fromPartial(object.sandbox)
+      : undefined;
     return message;
   },
 };
@@ -1385,10 +1406,7 @@ function createBaseCreateSshSessionRequest(): CreateSshSessionRequest {
 }
 
 export const CreateSshSessionRequest: MessageFns<CreateSshSessionRequest> = {
-  encode(
-    message: CreateSshSessionRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: CreateSshSessionRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.sandboxId !== "") {
       writer.uint32(10).string(message.sandboxId);
     }
@@ -1424,8 +1442,8 @@ export const CreateSshSessionRequest: MessageFns<CreateSshSessionRequest> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
     };
   },
 
@@ -1461,10 +1479,7 @@ function createBaseCreateSshSessionResponse(): CreateSshSessionResponse {
 }
 
 export const CreateSshSessionResponse: MessageFns<CreateSshSessionResponse> = {
-  encode(
-    message: CreateSshSessionResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: CreateSshSessionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.sandboxId !== "") {
       writer.uint32(10).string(message.sandboxId);
     }
@@ -1577,39 +1592,39 @@ export const CreateSshSessionResponse: MessageFns<CreateSshSessionResponse> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       token: isSet(object.token) ? globalThis.String(object.token) : "",
       gatewayHost: isSet(object.gatewayHost)
         ? globalThis.String(object.gatewayHost)
         : isSet(object.gateway_host)
-          ? globalThis.String(object.gateway_host)
-          : "",
+        ? globalThis.String(object.gateway_host)
+        : "",
       gatewayPort: isSet(object.gatewayPort)
         ? globalThis.Number(object.gatewayPort)
         : isSet(object.gateway_port)
-          ? globalThis.Number(object.gateway_port)
-          : 0,
+        ? globalThis.Number(object.gateway_port)
+        : 0,
       gatewayScheme: isSet(object.gatewayScheme)
         ? globalThis.String(object.gatewayScheme)
         : isSet(object.gateway_scheme)
-          ? globalThis.String(object.gateway_scheme)
-          : "",
+        ? globalThis.String(object.gateway_scheme)
+        : "",
       connectPath: isSet(object.connectPath)
         ? globalThis.String(object.connectPath)
         : isSet(object.connect_path)
-          ? globalThis.String(object.connect_path)
-          : "",
+        ? globalThis.String(object.connect_path)
+        : "",
       hostKeyFingerprint: isSet(object.hostKeyFingerprint)
         ? globalThis.String(object.hostKeyFingerprint)
         : isSet(object.host_key_fingerprint)
-          ? globalThis.String(object.host_key_fingerprint)
-          : "",
+        ? globalThis.String(object.host_key_fingerprint)
+        : "",
       expiresAtMs: isSet(object.expiresAtMs)
         ? globalThis.Number(object.expiresAtMs)
         : isSet(object.expires_at_ms)
-          ? globalThis.Number(object.expires_at_ms)
-          : 0,
+        ? globalThis.Number(object.expires_at_ms)
+        : 0,
     };
   },
 
@@ -1664,10 +1679,7 @@ function createBaseRevokeSshSessionRequest(): RevokeSshSessionRequest {
 }
 
 export const RevokeSshSessionRequest: MessageFns<RevokeSshSessionRequest> = {
-  encode(
-    message: RevokeSshSessionRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: RevokeSshSessionRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.token !== "") {
       writer.uint32(10).string(message.token);
     }
@@ -1725,10 +1737,7 @@ function createBaseRevokeSshSessionResponse(): RevokeSshSessionResponse {
 }
 
 export const RevokeSshSessionResponse: MessageFns<RevokeSshSessionResponse> = {
-  encode(
-    message: RevokeSshSessionResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: RevokeSshSessionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.revoked !== false) {
       writer.uint32(8).bool(message.revoked);
     }
@@ -1782,14 +1791,7 @@ export const RevokeSshSessionResponse: MessageFns<RevokeSshSessionResponse> = {
 };
 
 function createBaseExecSandboxRequest(): ExecSandboxRequest {
-  return {
-    sandboxId: "",
-    command: [],
-    workdir: "",
-    environment: {},
-    timeoutSeconds: 0,
-    stdin: new Uint8Array(0),
-  };
+  return { sandboxId: "", command: [], workdir: "", environment: {}, timeoutSeconds: 0, stdin: new Uint8Array(0) };
 }
 
 export const ExecSandboxRequest: MessageFns<ExecSandboxRequest> = {
@@ -1804,10 +1806,7 @@ export const ExecSandboxRequest: MessageFns<ExecSandboxRequest> = {
       writer.uint32(26).string(message.workdir);
     }
     globalThis.Object.entries(message.environment).forEach(([key, value]: [string, string]) => {
-      ExecSandboxRequest_EnvironmentEntry.encode(
-        { key: key as any, value },
-        writer.uint32(34).fork(),
-      ).join();
+      ExecSandboxRequest_EnvironmentEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
     });
     if (message.timeoutSeconds !== 0) {
       writer.uint32(40).uint32(message.timeoutSeconds);
@@ -1890,26 +1889,24 @@ export const ExecSandboxRequest: MessageFns<ExecSandboxRequest> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
-      command: globalThis.Array.isArray(object?.command)
-        ? object.command.map((e: any) => globalThis.String(e))
-        : [],
+        ? globalThis.String(object.sandbox_id)
+        : "",
+      command: globalThis.Array.isArray(object?.command) ? object.command.map((e: any) => globalThis.String(e)) : [],
       workdir: isSet(object.workdir) ? globalThis.String(object.workdir) : "",
       environment: isObject(object.environment)
         ? (globalThis.Object.entries(object.environment) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
       timeoutSeconds: isSet(object.timeoutSeconds)
         ? globalThis.Number(object.timeoutSeconds)
         : isSet(object.timeout_seconds)
-          ? globalThis.Number(object.timeout_seconds)
-          : 0,
+        ? globalThis.Number(object.timeout_seconds)
+        : 0,
       stdin: isSet(object.stdin) ? bytesFromBase64(object.stdin) : new Uint8Array(0),
     };
   },
@@ -1951,14 +1948,15 @@ export const ExecSandboxRequest: MessageFns<ExecSandboxRequest> = {
     message.sandboxId = object.sandboxId ?? "";
     message.command = object.command?.map((e) => e) || [];
     message.workdir = object.workdir ?? "";
-    message.environment = (
-      globalThis.Object.entries(object.environment ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
+    message.environment = (globalThis.Object.entries(object.environment ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
     message.stdin = object.stdin ?? new Uint8Array(0);
     return message;
@@ -1969,85 +1967,77 @@ function createBaseExecSandboxRequest_EnvironmentEntry(): ExecSandboxRequest_Env
   return { key: "", value: "" };
 }
 
-export const ExecSandboxRequest_EnvironmentEntry: MessageFns<ExecSandboxRequest_EnvironmentEntry> =
-  {
-    encode(
-      message: ExecSandboxRequest_EnvironmentEntry,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.key !== "") {
-        writer.uint32(10).string(message.key);
-      }
-      if (message.value !== "") {
-        writer.uint32(18).string(message.value);
-      }
-      return writer;
-    },
+export const ExecSandboxRequest_EnvironmentEntry: MessageFns<ExecSandboxRequest_EnvironmentEntry> = {
+  encode(message: ExecSandboxRequest_EnvironmentEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
 
-    decode(input: BinaryReader | Uint8Array, length?: number): ExecSandboxRequest_EnvironmentEntry {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseExecSandboxRequest_EnvironmentEntry();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.key = reader.string();
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): ExecSandboxRequest_EnvironmentEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExecSandboxRequest_EnvironmentEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
-          case 2: {
-            if (tag !== 18) {
-              break;
-            }
 
-            message.value = reader.string();
-            continue;
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
           }
+
+          message.value = reader.string();
+          continue;
         }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
       }
-      return message;
-    },
-
-    fromJSON(object: any): ExecSandboxRequest_EnvironmentEntry {
-      return {
-        key: isSet(object.key) ? globalThis.String(object.key) : "",
-        value: isSet(object.value) ? globalThis.String(object.value) : "",
-      };
-    },
-
-    toJSON(message: ExecSandboxRequest_EnvironmentEntry): unknown {
-      const obj: any = {};
-      if (message.key !== "") {
-        obj.key = message.key;
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
       }
-      if (message.value !== "") {
-        obj.value = message.value;
-      }
-      return obj;
-    },
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<ExecSandboxRequest_EnvironmentEntry>,
-    ): ExecSandboxRequest_EnvironmentEntry {
-      return ExecSandboxRequest_EnvironmentEntry.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<ExecSandboxRequest_EnvironmentEntry>,
-    ): ExecSandboxRequest_EnvironmentEntry {
-      const message = createBaseExecSandboxRequest_EnvironmentEntry();
-      message.key = object.key ?? "";
-      message.value = object.value ?? "";
-      return message;
-    },
-  };
+  fromJSON(object: any): ExecSandboxRequest_EnvironmentEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ExecSandboxRequest_EnvironmentEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ExecSandboxRequest_EnvironmentEntry>): ExecSandboxRequest_EnvironmentEntry {
+    return ExecSandboxRequest_EnvironmentEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ExecSandboxRequest_EnvironmentEntry>): ExecSandboxRequest_EnvironmentEntry {
+    const message = createBaseExecSandboxRequest_EnvironmentEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
 
 function createBaseExecSandboxStdout(): ExecSandboxStdout {
   return { data: new Uint8Array(0) };
@@ -2206,8 +2196,8 @@ export const ExecSandboxExit: MessageFns<ExecSandboxExit> = {
       exitCode: isSet(object.exitCode)
         ? globalThis.Number(object.exitCode)
         : isSet(object.exit_code)
-          ? globalThis.Number(object.exit_code)
-          : 0,
+        ? globalThis.Number(object.exit_code)
+        : 0,
     };
   },
 
@@ -2314,32 +2304,21 @@ export const ExecSandboxEvent: MessageFns<ExecSandboxEvent> = {
   },
   fromPartial(object: DeepPartial<ExecSandboxEvent>): ExecSandboxEvent {
     const message = createBaseExecSandboxEvent();
-    message.stdout =
-      object.stdout !== undefined && object.stdout !== null
-        ? ExecSandboxStdout.fromPartial(object.stdout)
-        : undefined;
-    message.stderr =
-      object.stderr !== undefined && object.stderr !== null
-        ? ExecSandboxStderr.fromPartial(object.stderr)
-        : undefined;
-    message.exit =
-      object.exit !== undefined && object.exit !== null
-        ? ExecSandboxExit.fromPartial(object.exit)
-        : undefined;
+    message.stdout = (object.stdout !== undefined && object.stdout !== null)
+      ? ExecSandboxStdout.fromPartial(object.stdout)
+      : undefined;
+    message.stderr = (object.stderr !== undefined && object.stderr !== null)
+      ? ExecSandboxStderr.fromPartial(object.stderr)
+      : undefined;
+    message.exit = (object.exit !== undefined && object.exit !== null)
+      ? ExecSandboxExit.fromPartial(object.exit)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSshSession(): SshSession {
-  return {
-    id: "",
-    sandboxId: "",
-    token: "",
-    createdAtMs: 0,
-    revoked: false,
-    name: "",
-    expiresAtMs: 0,
-  };
+  return { id: "", sandboxId: "", token: "", createdAtMs: 0, revoked: false, name: "", expiresAtMs: 0 };
 }
 
 export const SshSession: MessageFns<SshSession> = {
@@ -2446,21 +2425,21 @@ export const SshSession: MessageFns<SshSession> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       token: isSet(object.token) ? globalThis.String(object.token) : "",
       createdAtMs: isSet(object.createdAtMs)
         ? globalThis.Number(object.createdAtMs)
         : isSet(object.created_at_ms)
-          ? globalThis.Number(object.created_at_ms)
-          : 0,
+        ? globalThis.Number(object.created_at_ms)
+        : 0,
       revoked: isSet(object.revoked) ? globalThis.Boolean(object.revoked) : false,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       expiresAtMs: isSet(object.expiresAtMs)
         ? globalThis.Number(object.expiresAtMs)
         : isSet(object.expires_at_ms)
-          ? globalThis.Number(object.expires_at_ms)
-          : 0,
+        ? globalThis.Number(object.expires_at_ms)
+        : 0,
     };
   },
 
@@ -2658,48 +2637,48 @@ export const WatchSandboxRequest: MessageFns<WatchSandboxRequest> = {
       followStatus: isSet(object.followStatus)
         ? globalThis.Boolean(object.followStatus)
         : isSet(object.follow_status)
-          ? globalThis.Boolean(object.follow_status)
-          : false,
+        ? globalThis.Boolean(object.follow_status)
+        : false,
       followLogs: isSet(object.followLogs)
         ? globalThis.Boolean(object.followLogs)
         : isSet(object.follow_logs)
-          ? globalThis.Boolean(object.follow_logs)
-          : false,
+        ? globalThis.Boolean(object.follow_logs)
+        : false,
       followEvents: isSet(object.followEvents)
         ? globalThis.Boolean(object.followEvents)
         : isSet(object.follow_events)
-          ? globalThis.Boolean(object.follow_events)
-          : false,
+        ? globalThis.Boolean(object.follow_events)
+        : false,
       logTailLines: isSet(object.logTailLines)
         ? globalThis.Number(object.logTailLines)
         : isSet(object.log_tail_lines)
-          ? globalThis.Number(object.log_tail_lines)
-          : 0,
+        ? globalThis.Number(object.log_tail_lines)
+        : 0,
       eventTail: isSet(object.eventTail)
         ? globalThis.Number(object.eventTail)
         : isSet(object.event_tail)
-          ? globalThis.Number(object.event_tail)
-          : 0,
+        ? globalThis.Number(object.event_tail)
+        : 0,
       stopOnTerminal: isSet(object.stopOnTerminal)
         ? globalThis.Boolean(object.stopOnTerminal)
         : isSet(object.stop_on_terminal)
-          ? globalThis.Boolean(object.stop_on_terminal)
-          : false,
+        ? globalThis.Boolean(object.stop_on_terminal)
+        : false,
       logSinceMs: isSet(object.logSinceMs)
         ? globalThis.Number(object.logSinceMs)
         : isSet(object.log_since_ms)
-          ? globalThis.Number(object.log_since_ms)
-          : 0,
+        ? globalThis.Number(object.log_since_ms)
+        : 0,
       logSources: globalThis.Array.isArray(object?.logSources)
         ? object.logSources.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.log_sources)
-          ? object.log_sources.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.log_sources.map((e: any) => globalThis.String(e))
+        : [],
       logMinLevel: isSet(object.logMinLevel)
         ? globalThis.String(object.logMinLevel)
         : isSet(object.log_min_level)
-          ? globalThis.String(object.log_min_level)
-          : "",
+        ? globalThis.String(object.log_min_level)
+        : "",
     };
   },
 
@@ -2758,13 +2737,7 @@ export const WatchSandboxRequest: MessageFns<WatchSandboxRequest> = {
 };
 
 function createBaseSandboxStreamEvent(): SandboxStreamEvent {
-  return {
-    sandbox: undefined,
-    log: undefined,
-    event: undefined,
-    warning: undefined,
-    draftPolicyUpdate: undefined,
-  };
+  return { sandbox: undefined, log: undefined, event: undefined, warning: undefined, draftPolicyUpdate: undefined };
 }
 
 export const SandboxStreamEvent: MessageFns<SandboxStreamEvent> = {
@@ -2852,8 +2825,8 @@ export const SandboxStreamEvent: MessageFns<SandboxStreamEvent> = {
       draftPolicyUpdate: isSet(object.draftPolicyUpdate)
         ? DraftPolicyUpdate.fromJSON(object.draftPolicyUpdate)
         : isSet(object.draft_policy_update)
-          ? DraftPolicyUpdate.fromJSON(object.draft_policy_update)
-          : undefined,
+        ? DraftPolicyUpdate.fromJSON(object.draft_policy_update)
+        : undefined,
     };
   },
 
@@ -2882,40 +2855,27 @@ export const SandboxStreamEvent: MessageFns<SandboxStreamEvent> = {
   },
   fromPartial(object: DeepPartial<SandboxStreamEvent>): SandboxStreamEvent {
     const message = createBaseSandboxStreamEvent();
-    message.sandbox =
-      object.sandbox !== undefined && object.sandbox !== null
-        ? Sandbox.fromPartial(object.sandbox)
-        : undefined;
-    message.log =
-      object.log !== undefined && object.log !== null
-        ? SandboxLogLine.fromPartial(object.log)
-        : undefined;
-    message.event =
-      object.event !== undefined && object.event !== null
-        ? PlatformEvent.fromPartial(object.event)
-        : undefined;
-    message.warning =
-      object.warning !== undefined && object.warning !== null
-        ? SandboxStreamWarning.fromPartial(object.warning)
-        : undefined;
-    message.draftPolicyUpdate =
-      object.draftPolicyUpdate !== undefined && object.draftPolicyUpdate !== null
-        ? DraftPolicyUpdate.fromPartial(object.draftPolicyUpdate)
-        : undefined;
+    message.sandbox = (object.sandbox !== undefined && object.sandbox !== null)
+      ? Sandbox.fromPartial(object.sandbox)
+      : undefined;
+    message.log = (object.log !== undefined && object.log !== null)
+      ? SandboxLogLine.fromPartial(object.log)
+      : undefined;
+    message.event = (object.event !== undefined && object.event !== null)
+      ? PlatformEvent.fromPartial(object.event)
+      : undefined;
+    message.warning = (object.warning !== undefined && object.warning !== null)
+      ? SandboxStreamWarning.fromPartial(object.warning)
+      : undefined;
+    message.draftPolicyUpdate = (object.draftPolicyUpdate !== undefined && object.draftPolicyUpdate !== null)
+      ? DraftPolicyUpdate.fromPartial(object.draftPolicyUpdate)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSandboxLogLine(): SandboxLogLine {
-  return {
-    sandboxId: "",
-    timestampMs: 0,
-    level: "",
-    target: "",
-    message: "",
-    source: "",
-    fields: {},
-  };
+  return { sandboxId: "", timestampMs: 0, level: "", target: "", message: "", source: "", fields: {} };
 }
 
 export const SandboxLogLine: MessageFns<SandboxLogLine> = {
@@ -2939,10 +2899,7 @@ export const SandboxLogLine: MessageFns<SandboxLogLine> = {
       writer.uint32(50).string(message.source);
     }
     globalThis.Object.entries(message.fields).forEach(([key, value]: [string, string]) => {
-      SandboxLogLine_FieldsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(58).fork(),
-      ).join();
+      SandboxLogLine_FieldsEntry.encode({ key: key as any, value }, writer.uint32(58).fork()).join();
     });
     return writer;
   },
@@ -3027,25 +2984,25 @@ export const SandboxLogLine: MessageFns<SandboxLogLine> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       timestampMs: isSet(object.timestampMs)
         ? globalThis.Number(object.timestampMs)
         : isSet(object.timestamp_ms)
-          ? globalThis.Number(object.timestamp_ms)
-          : 0,
+        ? globalThis.Number(object.timestamp_ms)
+        : 0,
       level: isSet(object.level) ? globalThis.String(object.level) : "",
       target: isSet(object.target) ? globalThis.String(object.target) : "",
       message: isSet(object.message) ? globalThis.String(object.message) : "",
       source: isSet(object.source) ? globalThis.String(object.source) : "",
       fields: isObject(object.fields)
         ? (globalThis.Object.entries(object.fields) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
     };
   },
@@ -3111,10 +3068,7 @@ function createBaseSandboxLogLine_FieldsEntry(): SandboxLogLine_FieldsEntry {
 }
 
 export const SandboxLogLine_FieldsEntry: MessageFns<SandboxLogLine_FieldsEntry> = {
-  encode(
-    message: SandboxLogLine_FieldsEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SandboxLogLine_FieldsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3207,10 +3161,7 @@ export const PlatformEvent: MessageFns<PlatformEvent> = {
       writer.uint32(42).string(message.message);
     }
     globalThis.Object.entries(message.metadata).forEach(([key, value]: [string, string]) => {
-      PlatformEvent_MetadataEntry.encode(
-        { key: key as any, value },
-        writer.uint32(50).fork(),
-      ).join();
+      PlatformEvent_MetadataEntry.encode({ key: key as any, value }, writer.uint32(50).fork()).join();
     });
     return writer;
   },
@@ -3287,20 +3238,20 @@ export const PlatformEvent: MessageFns<PlatformEvent> = {
       timestampMs: isSet(object.timestampMs)
         ? globalThis.Number(object.timestampMs)
         : isSet(object.timestamp_ms)
-          ? globalThis.Number(object.timestamp_ms)
-          : 0,
+        ? globalThis.Number(object.timestamp_ms)
+        : 0,
       source: isSet(object.source) ? globalThis.String(object.source) : "",
       type: isSet(object.type) ? globalThis.String(object.type) : "",
       reason: isSet(object.reason) ? globalThis.String(object.reason) : "",
       message: isSet(object.message) ? globalThis.String(object.message) : "",
       metadata: isObject(object.metadata)
         ? (globalThis.Object.entries(object.metadata) as [string, any][]).reduce(
-            (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-              acc[key] = globalThis.String(value);
-              return acc;
-            },
-            {},
-          )
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
         : {},
     };
   },
@@ -3344,14 +3295,15 @@ export const PlatformEvent: MessageFns<PlatformEvent> = {
     message.type = object.type ?? "";
     message.reason = object.reason ?? "";
     message.message = object.message ?? "";
-    message.metadata = (
-      globalThis.Object.entries(object.metadata ?? {}) as [string, string][]
-    ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
-      if (value !== undefined) {
-        acc[key] = globalThis.String(value);
-      }
-      return acc;
-    }, {});
+    message.metadata = (globalThis.Object.entries(object.metadata ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
@@ -3361,10 +3313,7 @@ function createBasePlatformEvent_MetadataEntry(): PlatformEvent_MetadataEntry {
 }
 
 export const PlatformEvent_MetadataEntry: MessageFns<PlatformEvent_MetadataEntry> = {
-  encode(
-    message: PlatformEvent_MetadataEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: PlatformEvent_MetadataEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3546,10 +3495,9 @@ export const CreateProviderRequest: MessageFns<CreateProviderRequest> = {
   },
   fromPartial(object: DeepPartial<CreateProviderRequest>): CreateProviderRequest {
     const message = createBaseCreateProviderRequest();
-    message.provider =
-      object.provider !== undefined && object.provider !== null
-        ? Provider.fromPartial(object.provider)
-        : undefined;
+    message.provider = (object.provider !== undefined && object.provider !== null)
+      ? Provider.fromPartial(object.provider)
+      : undefined;
     return message;
   },
 };
@@ -3741,10 +3689,9 @@ export const UpdateProviderRequest: MessageFns<UpdateProviderRequest> = {
   },
   fromPartial(object: DeepPartial<UpdateProviderRequest>): UpdateProviderRequest {
     const message = createBaseUpdateProviderRequest();
-    message.provider =
-      object.provider !== undefined && object.provider !== null
-        ? Provider.fromPartial(object.provider)
-        : undefined;
+    message.provider = (object.provider !== undefined && object.provider !== null)
+      ? Provider.fromPartial(object.provider)
+      : undefined;
     return message;
   },
 };
@@ -3860,10 +3807,9 @@ export const ProviderResponse: MessageFns<ProviderResponse> = {
   },
   fromPartial(object: DeepPartial<ProviderResponse>): ProviderResponse {
     const message = createBaseProviderResponse();
-    message.provider =
-      object.provider !== undefined && object.provider !== null
-        ? Provider.fromPartial(object.provider)
-        : undefined;
+    message.provider = (object.provider !== undefined && object.provider !== null)
+      ? Provider.fromPartial(object.provider)
+      : undefined;
     return message;
   },
 };
@@ -3992,274 +3938,241 @@ function createBaseGetSandboxProviderEnvironmentRequest(): GetSandboxProviderEnv
   return { sandboxId: "" };
 }
 
-export const GetSandboxProviderEnvironmentRequest: MessageFns<GetSandboxProviderEnvironmentRequest> =
-  {
-    encode(
-      message: GetSandboxProviderEnvironmentRequest,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.sandboxId !== "") {
-        writer.uint32(10).string(message.sandboxId);
-      }
-      return writer;
-    },
+export const GetSandboxProviderEnvironmentRequest: MessageFns<GetSandboxProviderEnvironmentRequest> = {
+  encode(message: GetSandboxProviderEnvironmentRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sandboxId !== "") {
+      writer.uint32(10).string(message.sandboxId);
+    }
+    return writer;
+  },
 
-    decode(
-      input: BinaryReader | Uint8Array,
-      length?: number,
-    ): GetSandboxProviderEnvironmentRequest {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseGetSandboxProviderEnvironmentRequest();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.sandboxId = reader.string();
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): GetSandboxProviderEnvironmentRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSandboxProviderEnvironmentRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
+
+          message.sandboxId = reader.string();
+          continue;
         }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
       }
-      return message;
-    },
-
-    fromJSON(object: any): GetSandboxProviderEnvironmentRequest {
-      return {
-        sandboxId: isSet(object.sandboxId)
-          ? globalThis.String(object.sandboxId)
-          : isSet(object.sandbox_id)
-            ? globalThis.String(object.sandbox_id)
-            : "",
-      };
-    },
-
-    toJSON(message: GetSandboxProviderEnvironmentRequest): unknown {
-      const obj: any = {};
-      if (message.sandboxId !== "") {
-        obj.sandboxId = message.sandboxId;
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
       }
-      return obj;
-    },
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<GetSandboxProviderEnvironmentRequest>,
-    ): GetSandboxProviderEnvironmentRequest {
-      return GetSandboxProviderEnvironmentRequest.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<GetSandboxProviderEnvironmentRequest>,
-    ): GetSandboxProviderEnvironmentRequest {
-      const message = createBaseGetSandboxProviderEnvironmentRequest();
-      message.sandboxId = object.sandboxId ?? "";
-      return message;
-    },
-  };
+  fromJSON(object: any): GetSandboxProviderEnvironmentRequest {
+    return {
+      sandboxId: isSet(object.sandboxId)
+        ? globalThis.String(object.sandboxId)
+        : isSet(object.sandbox_id)
+        ? globalThis.String(object.sandbox_id)
+        : "",
+    };
+  },
+
+  toJSON(message: GetSandboxProviderEnvironmentRequest): unknown {
+    const obj: any = {};
+    if (message.sandboxId !== "") {
+      obj.sandboxId = message.sandboxId;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetSandboxProviderEnvironmentRequest>): GetSandboxProviderEnvironmentRequest {
+    return GetSandboxProviderEnvironmentRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetSandboxProviderEnvironmentRequest>): GetSandboxProviderEnvironmentRequest {
+    const message = createBaseGetSandboxProviderEnvironmentRequest();
+    message.sandboxId = object.sandboxId ?? "";
+    return message;
+  },
+};
 
 function createBaseGetSandboxProviderEnvironmentResponse(): GetSandboxProviderEnvironmentResponse {
   return { environment: {} };
 }
 
-export const GetSandboxProviderEnvironmentResponse: MessageFns<GetSandboxProviderEnvironmentResponse> =
-  {
-    encode(
-      message: GetSandboxProviderEnvironmentResponse,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      globalThis.Object.entries(message.environment).forEach(([key, value]: [string, string]) => {
-        GetSandboxProviderEnvironmentResponse_EnvironmentEntry.encode(
-          { key: key as any, value },
-          writer.uint32(10).fork(),
-        ).join();
-      });
-      return writer;
-    },
+export const GetSandboxProviderEnvironmentResponse: MessageFns<GetSandboxProviderEnvironmentResponse> = {
+  encode(message: GetSandboxProviderEnvironmentResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.environment).forEach(([key, value]: [string, string]) => {
+      GetSandboxProviderEnvironmentResponse_EnvironmentEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork(),
+      ).join();
+    });
+    return writer;
+  },
 
-    decode(
-      input: BinaryReader | Uint8Array,
-      length?: number,
-    ): GetSandboxProviderEnvironmentResponse {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseGetSandboxProviderEnvironmentResponse();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            const entry1 = GetSandboxProviderEnvironmentResponse_EnvironmentEntry.decode(
-              reader,
-              reader.uint32(),
-            );
-            if (entry1.value !== undefined) {
-              message.environment[entry1.key] = entry1.value;
-            }
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): GetSandboxProviderEnvironmentResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSandboxProviderEnvironmentResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
-        }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
-      }
-      return message;
-    },
 
-    fromJSON(object: any): GetSandboxProviderEnvironmentResponse {
-      return {
-        environment: isObject(object.environment)
-          ? (globalThis.Object.entries(object.environment) as [string, any][]).reduce(
-              (acc: { [key: string]: string }, [key, value]: [string, any]) => {
-                acc[key] = globalThis.String(value);
-                return acc;
-              },
-              {},
-            )
-          : {},
-      };
-    },
-
-    toJSON(message: GetSandboxProviderEnvironmentResponse): unknown {
-      const obj: any = {};
-      if (message.environment) {
-        const entries = globalThis.Object.entries(message.environment) as [string, string][];
-        if (entries.length > 0) {
-          obj.environment = {};
-          entries.forEach(([k, v]) => {
-            obj.environment[k] = v;
-          });
+          const entry1 = GetSandboxProviderEnvironmentResponse_EnvironmentEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.environment[entry1.key] = entry1.value;
+          }
+          continue;
         }
       }
-      return obj;
-    },
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<GetSandboxProviderEnvironmentResponse>,
-    ): GetSandboxProviderEnvironmentResponse {
-      return GetSandboxProviderEnvironmentResponse.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<GetSandboxProviderEnvironmentResponse>,
-    ): GetSandboxProviderEnvironmentResponse {
-      const message = createBaseGetSandboxProviderEnvironmentResponse();
-      message.environment = (
-        globalThis.Object.entries(object.environment ?? {}) as [string, string][]
-      ).reduce((acc: { [key: string]: string }, [key, value]: [string, string]) => {
+  fromJSON(object: any): GetSandboxProviderEnvironmentResponse {
+    return {
+      environment: isObject(object.environment)
+        ? (globalThis.Object.entries(object.environment) as [string, any][]).reduce(
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
+    };
+  },
+
+  toJSON(message: GetSandboxProviderEnvironmentResponse): unknown {
+    const obj: any = {};
+    if (message.environment) {
+      const entries = globalThis.Object.entries(message.environment) as [string, string][];
+      if (entries.length > 0) {
+        obj.environment = {};
+        entries.forEach(([k, v]) => {
+          obj.environment[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetSandboxProviderEnvironmentResponse>): GetSandboxProviderEnvironmentResponse {
+    return GetSandboxProviderEnvironmentResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetSandboxProviderEnvironmentResponse>): GetSandboxProviderEnvironmentResponse {
+    const message = createBaseGetSandboxProviderEnvironmentResponse();
+    message.environment = (globalThis.Object.entries(object.environment ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
         if (value !== undefined) {
           acc[key] = globalThis.String(value);
         }
         return acc;
-      }, {});
-      return message;
-    },
-  };
+      },
+      {},
+    );
+    return message;
+  },
+};
 
 function createBaseGetSandboxProviderEnvironmentResponse_EnvironmentEntry(): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
   return { key: "", value: "" };
 }
 
-export const GetSandboxProviderEnvironmentResponse_EnvironmentEntry: MessageFns<GetSandboxProviderEnvironmentResponse_EnvironmentEntry> =
-  {
-    encode(
-      message: GetSandboxProviderEnvironmentResponse_EnvironmentEntry,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.key !== "") {
-        writer.uint32(10).string(message.key);
-      }
-      if (message.value !== "") {
-        writer.uint32(18).string(message.value);
-      }
-      return writer;
-    },
+export const GetSandboxProviderEnvironmentResponse_EnvironmentEntry: MessageFns<
+  GetSandboxProviderEnvironmentResponse_EnvironmentEntry
+> = {
+  encode(
+    message: GetSandboxProviderEnvironmentResponse_EnvironmentEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
 
-    decode(
-      input: BinaryReader | Uint8Array,
-      length?: number,
-    ): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      const end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseGetSandboxProviderEnvironmentResponse_EnvironmentEntry();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.key = reader.string();
-            continue;
+  decode(input: BinaryReader | Uint8Array, length?: number): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSandboxProviderEnvironmentResponse_EnvironmentEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
           }
-          case 2: {
-            if (tag !== 18) {
-              break;
-            }
 
-            message.value = reader.string();
-            continue;
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
           }
+
+          message.value = reader.string();
+          continue;
         }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
       }
-      return message;
-    },
-
-    fromJSON(object: any): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
-      return {
-        key: isSet(object.key) ? globalThis.String(object.key) : "",
-        value: isSet(object.value) ? globalThis.String(object.value) : "",
-      };
-    },
-
-    toJSON(message: GetSandboxProviderEnvironmentResponse_EnvironmentEntry): unknown {
-      const obj: any = {};
-      if (message.key !== "") {
-        obj.key = message.key;
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
       }
-      if (message.value !== "") {
-        obj.value = message.value;
-      }
-      return obj;
-    },
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
 
-    create(
-      base?: DeepPartial<GetSandboxProviderEnvironmentResponse_EnvironmentEntry>,
-    ): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
-      return GetSandboxProviderEnvironmentResponse_EnvironmentEntry.fromPartial(base ?? {});
-    },
-    fromPartial(
-      object: DeepPartial<GetSandboxProviderEnvironmentResponse_EnvironmentEntry>,
-    ): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
-      const message = createBaseGetSandboxProviderEnvironmentResponse_EnvironmentEntry();
-      message.key = object.key ?? "";
-      message.value = object.value ?? "";
-      return message;
-    },
-  };
+  fromJSON(object: any): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: GetSandboxProviderEnvironmentResponse_EnvironmentEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<GetSandboxProviderEnvironmentResponse_EnvironmentEntry>,
+  ): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
+    return GetSandboxProviderEnvironmentResponse_EnvironmentEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<GetSandboxProviderEnvironmentResponse_EnvironmentEntry>,
+  ): GetSandboxProviderEnvironmentResponse_EnvironmentEntry {
+    const message = createBaseGetSandboxProviderEnvironmentResponse_EnvironmentEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
 
 function createBaseUpdateConfigRequest(): UpdateConfigRequest {
-  return {
-    name: "",
-    policy: undefined,
-    settingKey: "",
-    settingValue: undefined,
-    deleteSetting: false,
-    global: false,
-  };
+  return { name: "", policy: undefined, settingKey: "", settingValue: undefined, deleteSetting: false, global: false };
 }
 
 export const UpdateConfigRequest: MessageFns<UpdateConfigRequest> = {
@@ -4356,18 +4269,18 @@ export const UpdateConfigRequest: MessageFns<UpdateConfigRequest> = {
       settingKey: isSet(object.settingKey)
         ? globalThis.String(object.settingKey)
         : isSet(object.setting_key)
-          ? globalThis.String(object.setting_key)
-          : "",
+        ? globalThis.String(object.setting_key)
+        : "",
       settingValue: isSet(object.settingValue)
         ? SettingValue.fromJSON(object.settingValue)
         : isSet(object.setting_value)
-          ? SettingValue.fromJSON(object.setting_value)
-          : undefined,
+        ? SettingValue.fromJSON(object.setting_value)
+        : undefined,
       deleteSetting: isSet(object.deleteSetting)
         ? globalThis.Boolean(object.deleteSetting)
         : isSet(object.delete_setting)
-          ? globalThis.Boolean(object.delete_setting)
-          : false,
+        ? globalThis.Boolean(object.delete_setting)
+        : false,
       global: isSet(object.global) ? globalThis.Boolean(object.global) : false,
     };
   },
@@ -4401,15 +4314,13 @@ export const UpdateConfigRequest: MessageFns<UpdateConfigRequest> = {
   fromPartial(object: DeepPartial<UpdateConfigRequest>): UpdateConfigRequest {
     const message = createBaseUpdateConfigRequest();
     message.name = object.name ?? "";
-    message.policy =
-      object.policy !== undefined && object.policy !== null
-        ? SandboxPolicy.fromPartial(object.policy)
-        : undefined;
+    message.policy = (object.policy !== undefined && object.policy !== null)
+      ? SandboxPolicy.fromPartial(object.policy)
+      : undefined;
     message.settingKey = object.settingKey ?? "";
-    message.settingValue =
-      object.settingValue !== undefined && object.settingValue !== null
-        ? SettingValue.fromPartial(object.settingValue)
-        : undefined;
+    message.settingValue = (object.settingValue !== undefined && object.settingValue !== null)
+      ? SettingValue.fromPartial(object.settingValue)
+      : undefined;
     message.deleteSetting = object.deleteSetting ?? false;
     message.global = object.global ?? false;
     return message;
@@ -4491,13 +4402,13 @@ export const UpdateConfigResponse: MessageFns<UpdateConfigResponse> = {
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
       settingsRevision: isSet(object.settingsRevision)
         ? globalThis.Number(object.settingsRevision)
         : isSet(object.settings_revision)
-          ? globalThis.Number(object.settings_revision)
-          : 0,
+        ? globalThis.Number(object.settings_revision)
+        : 0,
       deleted: isSet(object.deleted) ? globalThis.Boolean(object.deleted) : false,
     };
   },
@@ -4537,10 +4448,7 @@ function createBaseGetSandboxPolicyStatusRequest(): GetSandboxPolicyStatusReques
 }
 
 export const GetSandboxPolicyStatusRequest: MessageFns<GetSandboxPolicyStatusRequest> = {
-  encode(
-    message: GetSandboxPolicyStatusRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetSandboxPolicyStatusRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -4632,10 +4540,7 @@ function createBaseGetSandboxPolicyStatusResponse(): GetSandboxPolicyStatusRespo
 }
 
 export const GetSandboxPolicyStatusResponse: MessageFns<GetSandboxPolicyStatusResponse> = {
-  encode(
-    message: GetSandboxPolicyStatusResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetSandboxPolicyStatusResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.revision !== undefined) {
       SandboxPolicyRevision.encode(message.revision, writer.uint32(10).fork()).join();
     }
@@ -4679,14 +4584,12 @@ export const GetSandboxPolicyStatusResponse: MessageFns<GetSandboxPolicyStatusRe
 
   fromJSON(object: any): GetSandboxPolicyStatusResponse {
     return {
-      revision: isSet(object.revision)
-        ? SandboxPolicyRevision.fromJSON(object.revision)
-        : undefined,
+      revision: isSet(object.revision) ? SandboxPolicyRevision.fromJSON(object.revision) : undefined,
       activeVersion: isSet(object.activeVersion)
         ? globalThis.Number(object.activeVersion)
         : isSet(object.active_version)
-          ? globalThis.Number(object.active_version)
-          : 0,
+        ? globalThis.Number(object.active_version)
+        : 0,
     };
   },
 
@@ -4706,10 +4609,9 @@ export const GetSandboxPolicyStatusResponse: MessageFns<GetSandboxPolicyStatusRe
   },
   fromPartial(object: DeepPartial<GetSandboxPolicyStatusResponse>): GetSandboxPolicyStatusResponse {
     const message = createBaseGetSandboxPolicyStatusResponse();
-    message.revision =
-      object.revision !== undefined && object.revision !== null
-        ? SandboxPolicyRevision.fromPartial(object.revision)
-        : undefined;
+    message.revision = (object.revision !== undefined && object.revision !== null)
+      ? SandboxPolicyRevision.fromPartial(object.revision)
+      : undefined;
     message.activeVersion = object.activeVersion ?? 0;
     return message;
   },
@@ -4720,10 +4622,7 @@ function createBaseListSandboxPoliciesRequest(): ListSandboxPoliciesRequest {
 }
 
 export const ListSandboxPoliciesRequest: MessageFns<ListSandboxPoliciesRequest> = {
-  encode(
-    message: ListSandboxPoliciesRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ListSandboxPoliciesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -4831,10 +4730,7 @@ function createBaseListSandboxPoliciesResponse(): ListSandboxPoliciesResponse {
 }
 
 export const ListSandboxPoliciesResponse: MessageFns<ListSandboxPoliciesResponse> = {
-  encode(
-    message: ListSandboxPoliciesResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ListSandboxPoliciesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.revisions) {
       SandboxPolicyRevision.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -4896,10 +4792,7 @@ function createBaseReportPolicyStatusRequest(): ReportPolicyStatusRequest {
 }
 
 export const ReportPolicyStatusRequest: MessageFns<ReportPolicyStatusRequest> = {
-  encode(
-    message: ReportPolicyStatusRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ReportPolicyStatusRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.sandboxId !== "") {
       writer.uint32(10).string(message.sandboxId);
     }
@@ -4968,15 +4861,15 @@ export const ReportPolicyStatusRequest: MessageFns<ReportPolicyStatusRequest> = 
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       version: isSet(object.version) ? globalThis.Number(object.version) : 0,
       status: isSet(object.status) ? policyStatusFromJSON(object.status) : 0,
       loadError: isSet(object.loadError)
         ? globalThis.String(object.loadError)
         : isSet(object.load_error)
-          ? globalThis.String(object.load_error)
-          : "",
+        ? globalThis.String(object.load_error)
+        : "",
     };
   },
 
@@ -5054,15 +4947,7 @@ export const ReportPolicyStatusResponse: MessageFns<ReportPolicyStatusResponse> 
 };
 
 function createBaseSandboxPolicyRevision(): SandboxPolicyRevision {
-  return {
-    version: 0,
-    policyHash: "",
-    status: 0,
-    loadError: "",
-    createdAtMs: 0,
-    loadedAtMs: 0,
-    policy: undefined,
-  };
+  return { version: 0, policyHash: "", status: 0, loadError: "", createdAtMs: 0, loadedAtMs: 0, policy: undefined };
 }
 
 export const SandboxPolicyRevision: MessageFns<SandboxPolicyRevision> = {
@@ -5169,24 +5054,24 @@ export const SandboxPolicyRevision: MessageFns<SandboxPolicyRevision> = {
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
       status: isSet(object.status) ? policyStatusFromJSON(object.status) : 0,
       loadError: isSet(object.loadError)
         ? globalThis.String(object.loadError)
         : isSet(object.load_error)
-          ? globalThis.String(object.load_error)
-          : "",
+        ? globalThis.String(object.load_error)
+        : "",
       createdAtMs: isSet(object.createdAtMs)
         ? globalThis.Number(object.createdAtMs)
         : isSet(object.created_at_ms)
-          ? globalThis.Number(object.created_at_ms)
-          : 0,
+        ? globalThis.Number(object.created_at_ms)
+        : 0,
       loadedAtMs: isSet(object.loadedAtMs)
         ? globalThis.Number(object.loadedAtMs)
         : isSet(object.loaded_at_ms)
-          ? globalThis.Number(object.loaded_at_ms)
-          : 0,
+        ? globalThis.Number(object.loaded_at_ms)
+        : 0,
       policy: isSet(object.policy) ? SandboxPolicy.fromJSON(object.policy) : undefined,
     };
   },
@@ -5228,10 +5113,9 @@ export const SandboxPolicyRevision: MessageFns<SandboxPolicyRevision> = {
     message.loadError = object.loadError ?? "";
     message.createdAtMs = object.createdAtMs ?? 0;
     message.loadedAtMs = object.loadedAtMs ?? 0;
-    message.policy =
-      object.policy !== undefined && object.policy !== null
-        ? SandboxPolicy.fromPartial(object.policy)
-        : undefined;
+    message.policy = (object.policy !== undefined && object.policy !== null)
+      ? SandboxPolicy.fromPartial(object.policy)
+      : undefined;
     return message;
   },
 };
@@ -5321,22 +5205,20 @@ export const GetSandboxLogsRequest: MessageFns<GetSandboxLogsRequest> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       lines: isSet(object.lines) ? globalThis.Number(object.lines) : 0,
       sinceMs: isSet(object.sinceMs)
         ? globalThis.Number(object.sinceMs)
         : isSet(object.since_ms)
-          ? globalThis.Number(object.since_ms)
-          : 0,
-      sources: globalThis.Array.isArray(object?.sources)
-        ? object.sources.map((e: any) => globalThis.String(e))
-        : [],
+        ? globalThis.Number(object.since_ms)
+        : 0,
+      sources: globalThis.Array.isArray(object?.sources) ? object.sources.map((e: any) => globalThis.String(e)) : [],
       minLevel: isSet(object.minLevel)
         ? globalThis.String(object.minLevel)
         : isSet(object.min_level)
-          ? globalThis.String(object.min_level)
-          : "",
+        ? globalThis.String(object.min_level)
+        : "",
     };
   },
 
@@ -5426,11 +5308,9 @@ export const PushSandboxLogsRequest: MessageFns<PushSandboxLogsRequest> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
-      logs: globalThis.Array.isArray(object?.logs)
-        ? object.logs.map((e: any) => SandboxLogLine.fromJSON(e))
-        : [],
+        ? globalThis.String(object.sandbox_id)
+        : "",
+      logs: globalThis.Array.isArray(object?.logs) ? object.logs.map((e: any) => SandboxLogLine.fromJSON(e)) : [],
     };
   },
 
@@ -5548,14 +5428,12 @@ export const GetSandboxLogsResponse: MessageFns<GetSandboxLogsResponse> = {
 
   fromJSON(object: any): GetSandboxLogsResponse {
     return {
-      logs: globalThis.Array.isArray(object?.logs)
-        ? object.logs.map((e: any) => SandboxLogLine.fromJSON(e))
-        : [],
+      logs: globalThis.Array.isArray(object?.logs) ? object.logs.map((e: any) => SandboxLogLine.fromJSON(e)) : [],
       bufferTotal: isSet(object.bufferTotal)
         ? globalThis.Number(object.bufferTotal)
         : isSet(object.buffer_total)
-          ? globalThis.Number(object.buffer_total)
-          : 0,
+        ? globalThis.Number(object.buffer_total)
+        : 0,
     };
   },
 
@@ -5924,8 +5802,8 @@ export const DenialSummary: MessageFns<DenialSummary> = {
       sandboxId: isSet(object.sandboxId)
         ? globalThis.String(object.sandboxId)
         : isSet(object.sandbox_id)
-          ? globalThis.String(object.sandbox_id)
-          : "",
+        ? globalThis.String(object.sandbox_id)
+        : "",
       host: isSet(object.host) ? globalThis.String(object.host) : "",
       port: isSet(object.port) ? globalThis.Number(object.port) : 0,
       binary: isSet(object.binary) ? globalThis.String(object.binary) : "",
@@ -5935,55 +5813,55 @@ export const DenialSummary: MessageFns<DenialSummary> = {
       denyReason: isSet(object.denyReason)
         ? globalThis.String(object.denyReason)
         : isSet(object.deny_reason)
-          ? globalThis.String(object.deny_reason)
-          : "",
+        ? globalThis.String(object.deny_reason)
+        : "",
       firstSeenMs: isSet(object.firstSeenMs)
         ? globalThis.Number(object.firstSeenMs)
         : isSet(object.first_seen_ms)
-          ? globalThis.Number(object.first_seen_ms)
-          : 0,
+        ? globalThis.Number(object.first_seen_ms)
+        : 0,
       lastSeenMs: isSet(object.lastSeenMs)
         ? globalThis.Number(object.lastSeenMs)
         : isSet(object.last_seen_ms)
-          ? globalThis.Number(object.last_seen_ms)
-          : 0,
+        ? globalThis.Number(object.last_seen_ms)
+        : 0,
       count: isSet(object.count) ? globalThis.Number(object.count) : 0,
       suppressedCount: isSet(object.suppressedCount)
         ? globalThis.Number(object.suppressedCount)
         : isSet(object.suppressed_count)
-          ? globalThis.Number(object.suppressed_count)
-          : 0,
+        ? globalThis.Number(object.suppressed_count)
+        : 0,
       totalCount: isSet(object.totalCount)
         ? globalThis.Number(object.totalCount)
         : isSet(object.total_count)
-          ? globalThis.Number(object.total_count)
-          : 0,
+        ? globalThis.Number(object.total_count)
+        : 0,
       sampleCmdlines: globalThis.Array.isArray(object?.sampleCmdlines)
         ? object.sampleCmdlines.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.sample_cmdlines)
-          ? object.sample_cmdlines.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.sample_cmdlines.map((e: any) => globalThis.String(e))
+        : [],
       binarySha256: isSet(object.binarySha256)
         ? globalThis.String(object.binarySha256)
         : isSet(object.binary_sha256)
-          ? globalThis.String(object.binary_sha256)
-          : "",
+        ? globalThis.String(object.binary_sha256)
+        : "",
       persistent: isSet(object.persistent) ? globalThis.Boolean(object.persistent) : false,
       denialStage: isSet(object.denialStage)
         ? globalThis.String(object.denialStage)
         : isSet(object.denial_stage)
-          ? globalThis.String(object.denial_stage)
-          : "",
+        ? globalThis.String(object.denial_stage)
+        : "",
       l7RequestSamples: globalThis.Array.isArray(object?.l7RequestSamples)
         ? object.l7RequestSamples.map((e: any) => L7RequestSample.fromJSON(e))
         : globalThis.Array.isArray(object?.l7_request_samples)
-          ? object.l7_request_samples.map((e: any) => L7RequestSample.fromJSON(e))
-          : [],
+        ? object.l7_request_samples.map((e: any) => L7RequestSample.fromJSON(e))
+        : [],
       l7InspectionActive: isSet(object.l7InspectionActive)
         ? globalThis.Boolean(object.l7InspectionActive)
         : isSet(object.l7_inspection_active)
-          ? globalThis.Boolean(object.l7_inspection_active)
-          : false,
+        ? globalThis.Boolean(object.l7_inspection_active)
+        : false,
     };
   },
 
@@ -6063,8 +5941,7 @@ export const DenialSummary: MessageFns<DenialSummary> = {
     message.binarySha256 = object.binarySha256 ?? "";
     message.persistent = object.persistent ?? false;
     message.denialStage = object.denialStage ?? "";
-    message.l7RequestSamples =
-      object.l7RequestSamples?.map((e) => L7RequestSample.fromPartial(e)) || [];
+    message.l7RequestSamples = object.l7RequestSamples?.map((e) => L7RequestSample.fromPartial(e)) || [];
     message.l7InspectionActive = object.l7InspectionActive ?? false;
     return message;
   },
@@ -6295,56 +6172,56 @@ export const PolicyChunk: MessageFns<PolicyChunk> = {
       ruleName: isSet(object.ruleName)
         ? globalThis.String(object.ruleName)
         : isSet(object.rule_name)
-          ? globalThis.String(object.rule_name)
-          : "",
+        ? globalThis.String(object.rule_name)
+        : "",
       proposedRule: isSet(object.proposedRule)
         ? NetworkPolicyRule.fromJSON(object.proposedRule)
         : isSet(object.proposed_rule)
-          ? NetworkPolicyRule.fromJSON(object.proposed_rule)
-          : undefined,
+        ? NetworkPolicyRule.fromJSON(object.proposed_rule)
+        : undefined,
       rationale: isSet(object.rationale) ? globalThis.String(object.rationale) : "",
       securityNotes: isSet(object.securityNotes)
         ? globalThis.String(object.securityNotes)
         : isSet(object.security_notes)
-          ? globalThis.String(object.security_notes)
-          : "",
+        ? globalThis.String(object.security_notes)
+        : "",
       confidence: isSet(object.confidence) ? globalThis.Number(object.confidence) : 0,
       denialSummaryIds: globalThis.Array.isArray(object?.denialSummaryIds)
         ? object.denialSummaryIds.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.denial_summary_ids)
-          ? object.denial_summary_ids.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.denial_summary_ids.map((e: any) => globalThis.String(e))
+        : [],
       createdAtMs: isSet(object.createdAtMs)
         ? globalThis.Number(object.createdAtMs)
         : isSet(object.created_at_ms)
-          ? globalThis.Number(object.created_at_ms)
-          : 0,
+        ? globalThis.Number(object.created_at_ms)
+        : 0,
       decidedAtMs: isSet(object.decidedAtMs)
         ? globalThis.Number(object.decidedAtMs)
         : isSet(object.decided_at_ms)
-          ? globalThis.Number(object.decided_at_ms)
-          : 0,
+        ? globalThis.Number(object.decided_at_ms)
+        : 0,
       stage: isSet(object.stage) ? globalThis.String(object.stage) : "",
       supersedesChunkId: isSet(object.supersedesChunkId)
         ? globalThis.String(object.supersedesChunkId)
         : isSet(object.supersedes_chunk_id)
-          ? globalThis.String(object.supersedes_chunk_id)
-          : "",
+        ? globalThis.String(object.supersedes_chunk_id)
+        : "",
       hitCount: isSet(object.hitCount)
         ? globalThis.Number(object.hitCount)
         : isSet(object.hit_count)
-          ? globalThis.Number(object.hit_count)
-          : 0,
+        ? globalThis.Number(object.hit_count)
+        : 0,
       firstSeenMs: isSet(object.firstSeenMs)
         ? globalThis.Number(object.firstSeenMs)
         : isSet(object.first_seen_ms)
-          ? globalThis.Number(object.first_seen_ms)
-          : 0,
+        ? globalThis.Number(object.first_seen_ms)
+        : 0,
       lastSeenMs: isSet(object.lastSeenMs)
         ? globalThis.Number(object.lastSeenMs)
         : isSet(object.last_seen_ms)
-          ? globalThis.Number(object.last_seen_ms)
-          : 0,
+        ? globalThis.Number(object.last_seen_ms)
+        : 0,
       binary: isSet(object.binary) ? globalThis.String(object.binary) : "",
     };
   },
@@ -6410,10 +6287,9 @@ export const PolicyChunk: MessageFns<PolicyChunk> = {
     message.id = object.id ?? "";
     message.status = object.status ?? "";
     message.ruleName = object.ruleName ?? "";
-    message.proposedRule =
-      object.proposedRule !== undefined && object.proposedRule !== null
-        ? NetworkPolicyRule.fromPartial(object.proposedRule)
-        : undefined;
+    message.proposedRule = (object.proposedRule !== undefined && object.proposedRule !== null)
+      ? NetworkPolicyRule.fromPartial(object.proposedRule)
+      : undefined;
     message.rationale = object.rationale ?? "";
     message.securityNotes = object.securityNotes ?? "";
     message.confidence = object.confidence ?? 0;
@@ -6504,18 +6380,18 @@ export const DraftPolicyUpdate: MessageFns<DraftPolicyUpdate> = {
       draftVersion: isSet(object.draftVersion)
         ? globalThis.Number(object.draftVersion)
         : isSet(object.draft_version)
-          ? globalThis.Number(object.draft_version)
-          : 0,
+        ? globalThis.Number(object.draft_version)
+        : 0,
       newChunks: isSet(object.newChunks)
         ? globalThis.Number(object.newChunks)
         : isSet(object.new_chunks)
-          ? globalThis.Number(object.new_chunks)
-          : 0,
+        ? globalThis.Number(object.new_chunks)
+        : 0,
       totalPending: isSet(object.totalPending)
         ? globalThis.Number(object.totalPending)
         : isSet(object.total_pending)
-          ? globalThis.Number(object.total_pending)
-          : 0,
+        ? globalThis.Number(object.total_pending)
+        : 0,
       summary: isSet(object.summary) ? globalThis.String(object.summary) : "",
     };
   },
@@ -6555,10 +6431,7 @@ function createBaseSubmitPolicyAnalysisRequest(): SubmitPolicyAnalysisRequest {
 }
 
 export const SubmitPolicyAnalysisRequest: MessageFns<SubmitPolicyAnalysisRequest> = {
-  encode(
-    message: SubmitPolicyAnalysisRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SubmitPolicyAnalysisRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.summaries) {
       DenialSummary.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -6630,13 +6503,13 @@ export const SubmitPolicyAnalysisRequest: MessageFns<SubmitPolicyAnalysisRequest
       proposedChunks: globalThis.Array.isArray(object?.proposedChunks)
         ? object.proposedChunks.map((e: any) => PolicyChunk.fromJSON(e))
         : globalThis.Array.isArray(object?.proposed_chunks)
-          ? object.proposed_chunks.map((e: any) => PolicyChunk.fromJSON(e))
-          : [],
+        ? object.proposed_chunks.map((e: any) => PolicyChunk.fromJSON(e))
+        : [],
       analysisMode: isSet(object.analysisMode)
         ? globalThis.String(object.analysisMode)
         : isSet(object.analysis_mode)
-          ? globalThis.String(object.analysis_mode)
-          : "",
+        ? globalThis.String(object.analysis_mode)
+        : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
     };
   },
@@ -6676,10 +6549,7 @@ function createBaseSubmitPolicyAnalysisResponse(): SubmitPolicyAnalysisResponse 
 }
 
 export const SubmitPolicyAnalysisResponse: MessageFns<SubmitPolicyAnalysisResponse> = {
-  encode(
-    message: SubmitPolicyAnalysisResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: SubmitPolicyAnalysisResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.acceptedChunks !== 0) {
       writer.uint32(8).uint32(message.acceptedChunks);
     }
@@ -6737,18 +6607,18 @@ export const SubmitPolicyAnalysisResponse: MessageFns<SubmitPolicyAnalysisRespon
       acceptedChunks: isSet(object.acceptedChunks)
         ? globalThis.Number(object.acceptedChunks)
         : isSet(object.accepted_chunks)
-          ? globalThis.Number(object.accepted_chunks)
-          : 0,
+        ? globalThis.Number(object.accepted_chunks)
+        : 0,
       rejectedChunks: isSet(object.rejectedChunks)
         ? globalThis.Number(object.rejectedChunks)
         : isSet(object.rejected_chunks)
-          ? globalThis.Number(object.rejected_chunks)
-          : 0,
+        ? globalThis.Number(object.rejected_chunks)
+        : 0,
       rejectionReasons: globalThis.Array.isArray(object?.rejectionReasons)
         ? object.rejectionReasons.map((e: any) => globalThis.String(e))
         : globalThis.Array.isArray(object?.rejection_reasons)
-          ? object.rejection_reasons.map((e: any) => globalThis.String(e))
-          : [],
+        ? object.rejection_reasons.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -6831,8 +6701,8 @@ export const GetDraftPolicyRequest: MessageFns<GetDraftPolicyRequest> = {
       statusFilter: isSet(object.statusFilter)
         ? globalThis.String(object.statusFilter)
         : isSet(object.status_filter)
-          ? globalThis.String(object.status_filter)
-          : "",
+        ? globalThis.String(object.status_filter)
+        : "",
     };
   },
 
@@ -6929,24 +6799,22 @@ export const GetDraftPolicyResponse: MessageFns<GetDraftPolicyResponse> = {
 
   fromJSON(object: any): GetDraftPolicyResponse {
     return {
-      chunks: globalThis.Array.isArray(object?.chunks)
-        ? object.chunks.map((e: any) => PolicyChunk.fromJSON(e))
-        : [],
+      chunks: globalThis.Array.isArray(object?.chunks) ? object.chunks.map((e: any) => PolicyChunk.fromJSON(e)) : [],
       rollingSummary: isSet(object.rollingSummary)
         ? globalThis.String(object.rollingSummary)
         : isSet(object.rolling_summary)
-          ? globalThis.String(object.rolling_summary)
-          : "",
+        ? globalThis.String(object.rolling_summary)
+        : "",
       draftVersion: isSet(object.draftVersion)
         ? globalThis.Number(object.draftVersion)
         : isSet(object.draft_version)
-          ? globalThis.Number(object.draft_version)
-          : 0,
+        ? globalThis.Number(object.draft_version)
+        : 0,
       lastAnalyzedAtMs: isSet(object.lastAnalyzedAtMs)
         ? globalThis.Number(object.lastAnalyzedAtMs)
         : isSet(object.last_analyzed_at_ms)
-          ? globalThis.Number(object.last_analyzed_at_ms)
-          : 0,
+        ? globalThis.Number(object.last_analyzed_at_ms)
+        : 0,
     };
   },
 
@@ -6985,10 +6853,7 @@ function createBaseApproveDraftChunkRequest(): ApproveDraftChunkRequest {
 }
 
 export const ApproveDraftChunkRequest: MessageFns<ApproveDraftChunkRequest> = {
-  encode(
-    message: ApproveDraftChunkRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ApproveDraftChunkRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -7036,8 +6901,8 @@ export const ApproveDraftChunkRequest: MessageFns<ApproveDraftChunkRequest> = {
       chunkId: isSet(object.chunkId)
         ? globalThis.String(object.chunkId)
         : isSet(object.chunk_id)
-          ? globalThis.String(object.chunk_id)
-          : "",
+        ? globalThis.String(object.chunk_id)
+        : "",
     };
   },
 
@@ -7068,10 +6933,7 @@ function createBaseApproveDraftChunkResponse(): ApproveDraftChunkResponse {
 }
 
 export const ApproveDraftChunkResponse: MessageFns<ApproveDraftChunkResponse> = {
-  encode(
-    message: ApproveDraftChunkResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ApproveDraftChunkResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.policyVersion !== 0) {
       writer.uint32(8).uint32(message.policyVersion);
     }
@@ -7118,13 +6980,13 @@ export const ApproveDraftChunkResponse: MessageFns<ApproveDraftChunkResponse> = 
       policyVersion: isSet(object.policyVersion)
         ? globalThis.Number(object.policyVersion)
         : isSet(object.policy_version)
-          ? globalThis.Number(object.policy_version)
-          : 0,
+        ? globalThis.Number(object.policy_version)
+        : 0,
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
     };
   },
 
@@ -7155,10 +7017,7 @@ function createBaseRejectDraftChunkRequest(): RejectDraftChunkRequest {
 }
 
 export const RejectDraftChunkRequest: MessageFns<RejectDraftChunkRequest> = {
-  encode(
-    message: RejectDraftChunkRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: RejectDraftChunkRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -7217,8 +7076,8 @@ export const RejectDraftChunkRequest: MessageFns<RejectDraftChunkRequest> = {
       chunkId: isSet(object.chunkId)
         ? globalThis.String(object.chunkId)
         : isSet(object.chunk_id)
-          ? globalThis.String(object.chunk_id)
-          : "",
+        ? globalThis.String(object.chunk_id)
+        : "",
       reason: isSet(object.reason) ? globalThis.String(object.reason) : "",
     };
   },
@@ -7297,10 +7156,7 @@ function createBaseApproveAllDraftChunksRequest(): ApproveAllDraftChunksRequest 
 }
 
 export const ApproveAllDraftChunksRequest: MessageFns<ApproveAllDraftChunksRequest> = {
-  encode(
-    message: ApproveAllDraftChunksRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ApproveAllDraftChunksRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -7348,8 +7204,8 @@ export const ApproveAllDraftChunksRequest: MessageFns<ApproveAllDraftChunksReque
       includeSecurityFlagged: isSet(object.includeSecurityFlagged)
         ? globalThis.Boolean(object.includeSecurityFlagged)
         : isSet(object.include_security_flagged)
-          ? globalThis.Boolean(object.include_security_flagged)
-          : false,
+        ? globalThis.Boolean(object.include_security_flagged)
+        : false,
     };
   },
 
@@ -7380,10 +7236,7 @@ function createBaseApproveAllDraftChunksResponse(): ApproveAllDraftChunksRespons
 }
 
 export const ApproveAllDraftChunksResponse: MessageFns<ApproveAllDraftChunksResponse> = {
-  encode(
-    message: ApproveAllDraftChunksResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ApproveAllDraftChunksResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.policyVersion !== 0) {
       writer.uint32(8).uint32(message.policyVersion);
     }
@@ -7452,23 +7305,23 @@ export const ApproveAllDraftChunksResponse: MessageFns<ApproveAllDraftChunksResp
       policyVersion: isSet(object.policyVersion)
         ? globalThis.Number(object.policyVersion)
         : isSet(object.policy_version)
-          ? globalThis.Number(object.policy_version)
-          : 0,
+        ? globalThis.Number(object.policy_version)
+        : 0,
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
       chunksApproved: isSet(object.chunksApproved)
         ? globalThis.Number(object.chunksApproved)
         : isSet(object.chunks_approved)
-          ? globalThis.Number(object.chunks_approved)
-          : 0,
+        ? globalThis.Number(object.chunks_approved)
+        : 0,
       chunksSkipped: isSet(object.chunksSkipped)
         ? globalThis.Number(object.chunksSkipped)
         : isSet(object.chunks_skipped)
-          ? globalThis.Number(object.chunks_skipped)
-          : 0,
+        ? globalThis.Number(object.chunks_skipped)
+        : 0,
     };
   },
 
@@ -7566,13 +7419,13 @@ export const EditDraftChunkRequest: MessageFns<EditDraftChunkRequest> = {
       chunkId: isSet(object.chunkId)
         ? globalThis.String(object.chunkId)
         : isSet(object.chunk_id)
-          ? globalThis.String(object.chunk_id)
-          : "",
+        ? globalThis.String(object.chunk_id)
+        : "",
       proposedRule: isSet(object.proposedRule)
         ? NetworkPolicyRule.fromJSON(object.proposedRule)
         : isSet(object.proposed_rule)
-          ? NetworkPolicyRule.fromJSON(object.proposed_rule)
-          : undefined,
+        ? NetworkPolicyRule.fromJSON(object.proposed_rule)
+        : undefined,
     };
   },
 
@@ -7597,10 +7450,9 @@ export const EditDraftChunkRequest: MessageFns<EditDraftChunkRequest> = {
     const message = createBaseEditDraftChunkRequest();
     message.name = object.name ?? "";
     message.chunkId = object.chunkId ?? "";
-    message.proposedRule =
-      object.proposedRule !== undefined && object.proposedRule !== null
-        ? NetworkPolicyRule.fromPartial(object.proposedRule)
-        : undefined;
+    message.proposedRule = (object.proposedRule !== undefined && object.proposedRule !== null)
+      ? NetworkPolicyRule.fromPartial(object.proposedRule)
+      : undefined;
     return message;
   },
 };
@@ -7701,8 +7553,8 @@ export const UndoDraftChunkRequest: MessageFns<UndoDraftChunkRequest> = {
       chunkId: isSet(object.chunkId)
         ? globalThis.String(object.chunkId)
         : isSet(object.chunk_id)
-          ? globalThis.String(object.chunk_id)
-          : "",
+        ? globalThis.String(object.chunk_id)
+        : "",
     };
   },
 
@@ -7780,13 +7632,13 @@ export const UndoDraftChunkResponse: MessageFns<UndoDraftChunkResponse> = {
       policyVersion: isSet(object.policyVersion)
         ? globalThis.Number(object.policyVersion)
         : isSet(object.policy_version)
-          ? globalThis.Number(object.policy_version)
-          : 0,
+        ? globalThis.Number(object.policy_version)
+        : 0,
       policyHash: isSet(object.policyHash)
         ? globalThis.String(object.policyHash)
         : isSet(object.policy_hash)
-          ? globalThis.String(object.policy_hash)
-          : "",
+        ? globalThis.String(object.policy_hash)
+        : "",
     };
   },
 
@@ -7817,10 +7669,7 @@ function createBaseClearDraftChunksRequest(): ClearDraftChunksRequest {
 }
 
 export const ClearDraftChunksRequest: MessageFns<ClearDraftChunksRequest> = {
-  encode(
-    message: ClearDraftChunksRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ClearDraftChunksRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -7878,10 +7727,7 @@ function createBaseClearDraftChunksResponse(): ClearDraftChunksResponse {
 }
 
 export const ClearDraftChunksResponse: MessageFns<ClearDraftChunksResponse> = {
-  encode(
-    message: ClearDraftChunksResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: ClearDraftChunksResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.chunksCleared !== 0) {
       writer.uint32(8).uint32(message.chunksCleared);
     }
@@ -7917,8 +7763,8 @@ export const ClearDraftChunksResponse: MessageFns<ClearDraftChunksResponse> = {
       chunksCleared: isSet(object.chunksCleared)
         ? globalThis.Number(object.chunksCleared)
         : isSet(object.chunks_cleared)
-          ? globalThis.Number(object.chunks_cleared)
-          : 0,
+        ? globalThis.Number(object.chunks_cleared)
+        : 0,
     };
   },
 
@@ -8072,19 +7918,19 @@ export const DraftHistoryEntry: MessageFns<DraftHistoryEntry> = {
       timestampMs: isSet(object.timestampMs)
         ? globalThis.Number(object.timestampMs)
         : isSet(object.timestamp_ms)
-          ? globalThis.Number(object.timestamp_ms)
-          : 0,
+        ? globalThis.Number(object.timestamp_ms)
+        : 0,
       eventType: isSet(object.eventType)
         ? globalThis.String(object.eventType)
         : isSet(object.event_type)
-          ? globalThis.String(object.event_type)
-          : "",
+        ? globalThis.String(object.event_type)
+        : "",
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       chunkId: isSet(object.chunkId)
         ? globalThis.String(object.chunkId)
         : isSet(object.chunk_id)
-          ? globalThis.String(object.chunk_id)
-          : "",
+        ? globalThis.String(object.chunk_id)
+        : "",
     };
   },
 
@@ -8123,10 +7969,7 @@ function createBaseGetDraftHistoryResponse(): GetDraftHistoryResponse {
 }
 
 export const GetDraftHistoryResponse: MessageFns<GetDraftHistoryResponse> = {
-  encode(
-    message: GetDraftHistoryResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: GetDraftHistoryResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.entries) {
       DraftHistoryEntry.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -8363,11 +8206,9 @@ export const OpenShellDefinition = {
     /** Get provider environment for a sandbox (called by sandbox supervisor at startup). */
     getSandboxProviderEnvironment: {
       name: "GetSandboxProviderEnvironment",
-      requestType:
-        GetSandboxProviderEnvironmentRequest as typeof GetSandboxProviderEnvironmentRequest,
+      requestType: GetSandboxProviderEnvironmentRequest as typeof GetSandboxProviderEnvironmentRequest,
       requestStream: false,
-      responseType:
-        GetSandboxProviderEnvironmentResponse as typeof GetSandboxProviderEnvironmentResponse,
+      responseType: GetSandboxProviderEnvironmentResponse as typeof GetSandboxProviderEnvironmentResponse,
       responseStream: false,
       options: {},
     },
@@ -8491,20 +8332,14 @@ export const OpenShellDefinition = {
 
 export interface OpenShellServiceImplementation<CallContextExt = {}> {
   /** Check the health of the service. */
-  health(
-    request: HealthRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<HealthResponse>>;
+  health(request: HealthRequest, context: CallContext & CallContextExt): Promise<DeepPartial<HealthResponse>>;
   /** Create a new sandbox. */
   createSandbox(
     request: CreateSandboxRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<SandboxResponse>>;
   /** Fetch a sandbox by name. */
-  getSandbox(
-    request: GetSandboxRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<SandboxResponse>>;
+  getSandbox(request: GetSandboxRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SandboxResponse>>;
   /** List sandboxes. */
   listSandboxes(
     request: ListSandboxesRequest,
@@ -8661,20 +8496,14 @@ export interface OpenShellServiceImplementation<CallContextExt = {}> {
 
 export interface OpenShellClient<CallOptionsExt = {}> {
   /** Check the health of the service. */
-  health(
-    request: DeepPartial<HealthRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<HealthResponse>;
+  health(request: DeepPartial<HealthRequest>, options?: CallOptions & CallOptionsExt): Promise<HealthResponse>;
   /** Create a new sandbox. */
   createSandbox(
     request: DeepPartial<CreateSandboxRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<SandboxResponse>;
   /** Fetch a sandbox by name. */
-  getSandbox(
-    request: DeepPartial<GetSandboxRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<SandboxResponse>;
+  getSandbox(request: DeepPartial<GetSandboxRequest>, options?: CallOptions & CallOptionsExt): Promise<SandboxResponse>;
   /** List sandboxes. */
   listSandboxes(
     request: DeepPartial<ListSandboxesRequest>,
@@ -8856,15 +8685,11 @@ function base64FromBytes(arr: Uint8Array): string {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-    ? globalThis.Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());
@@ -8885,9 +8710,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export type ServerStreamingMethodResult<Response> = {
-  [Symbol.asyncIterator](): AsyncIterator<Response, void>;
-};
+export type ServerStreamingMethodResult<Response> = { [Symbol.asyncIterator](): AsyncIterator<Response, void> };
 
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
